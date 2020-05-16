@@ -5,4 +5,4 @@ Alpha-beta pruunausta käyttävä sudokuratkaisija Javalla.
 [Määrittelydokumentti](dokumentaatio/määrittelydokumentti.md)
 
 ## Viikkoraportit
-[Viikkoraportti 1](dokumentaati/viikkoraportti-1.md)
+[Viikkoraportti 1](dokumentaatio/viikkoraportti-1.md)
