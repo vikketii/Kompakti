@@ -10,7 +10,7 @@ public class FileReader {
     public ArrayList<Byte> readBytes(String filename) throws IOException {
         File fileRead = new File(filename);
         byte[] bytes = Files.readAllBytes(fileRead.toPath());
-        ArrayList<Byte> bytesAsArrayList = new ArrayList<>(Arrays.asList(bytes));
+        ArrayList<Byte> bytesAsArrayList = new ArrayList(Arrays.asList(bytes));
         return bytesAsArrayList;
     }
 }

@@ -16,11 +16,17 @@ public class Main {
 
             ArrayList<Byte> compressed = lzw.compress(bytes);
 
-//            present(bytes, compressed);
+            present(bytes, compressed);
 
         } catch (Exception e) {
             System.out.println("Give filename as argument");
         }
+    }
+
+    private static void present(ArrayList<Byte> original, ArrayList<Byte> compressed) {
+        System.out.println("Original size: " + original.size());
+        System.out.println("Compressed size (with LZW): " + compressed.size());
+        System.out.println("Compress ratio: " + (compressed.size() / original.size()));
     }
 
 }
