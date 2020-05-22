@@ -12,4 +12,10 @@ public class FileReader {
         byte[] bytes = Files.readAllBytes(fileRead.toPath());
         return bytes;
     }
+
+    public String readString(String filename) throws IOException {
+        File fileRead = new File(filename);
+        String content = Files.readString(fileRead.toPath());
+        return content;
+    }
 }
