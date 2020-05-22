@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         try {
-            String fileName = args[0];
-            System.out.println(fileName);
-            ArrayList<Byte> bytes = readBytes(fileName);
+            String filename = args[0];
+            System.out.println(filename);
+            ArrayList<Byte> bytes = readBytes(filename);
 
             ArrayList<Byte> compressed = LZW(bytes);
 
