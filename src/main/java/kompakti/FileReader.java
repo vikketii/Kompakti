@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FileReader {
-    public ArrayList<Byte> readBytes(String filename) throws IOException {
+    public byte[] readBytes(String filename) throws IOException {
         File fileRead = new File(filename);
         byte[] bytes = Files.readAllBytes(fileRead.toPath());
-        ArrayList<Byte> bytesAsArrayList = new ArrayList(Arrays.asList(bytes));
-        return bytesAsArrayList;
+        return bytes;
     }
 }
