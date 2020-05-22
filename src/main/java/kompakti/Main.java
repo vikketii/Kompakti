@@ -35,7 +35,10 @@ public class Main {
     private static void presentString(String original, ArrayList<Integer> compressed) {
         System.out.println("Original size: " + original.length());
         System.out.println("Compressed size (with LZW): " + compressed.size());
-        System.out.println("Compress ratio: " + (compressed.size() / original.length()));
+        int ratio = (int) (100 - ((double) compressed.size() / original.length()) * 100);
+
+        System.out.println("Compress ratio: " + ratio + "%");
+
     }
 
 }
