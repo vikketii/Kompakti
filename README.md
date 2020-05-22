@@ -1,8 +1,8 @@
-# SudokuSolver
-Alpha-beta pruunausta käyttävä sudokuratkaisija Javalla.
+# Kompakti
+Kompakti is data compression program using Huffman and LZW compression algorithms.
 
-## Dokumentointi
-[Määrittelydokumentti](dokumentaatio/määrittelydokumentti.md)
+## Documentation
+- [Project definition](documentation/project-definition.md)
 
-## Viikkoraportit
-[Viikkoraportti 1](dokumentaatio/viikkoraportti-1.md)
+## Weekly reports in Finnish
+- [1. Viikkoraportti](documentation/viikkoraportit/viikkoraportti-1.md)
