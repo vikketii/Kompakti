@@ -1,4 +1,6 @@
 # Viikkoraportti 2
+Aikaa käytetty 8h.
+
 ## Mitä olen tehnyt tällä viikolla?
 Päätin muutta projektini aiheen täysin, sillä aloitusviikon aihevalinta oli jäänyt viimetinkaan, minkä vuoksi myös alkuperäinen aihe oli huonosti muotoiltu ja harkittu. Nykyinen aihe, pakkausalgoritmien toteutus ja vertailu, on paremmin rajattu ja pohdittu valinta.
 
