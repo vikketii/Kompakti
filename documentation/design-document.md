@@ -2,7 +2,7 @@
 Kompakti is Java program for data compression. The goal of this project is to implement Huffman and LZW algorithms using only self made data structures and achieving meaningful compression rate for real life data. In the end there will be also some comparing functionality between implemented algorithms.
 
 ## Data structures
-- LZW uses dictionary.
+- LZW uses dictionary and dynamic array.
 - Huffman uses binary tree which can be stored in to a regular array. Array size depends on the number of symbols, so dynamic array implementation is probably needed.
 
 ## Input/Output

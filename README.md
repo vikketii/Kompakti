@@ -5,6 +5,7 @@ Kompakti is data compression program using Huffman and LZW compression algorithm
 - [Design document](documentation/design-document.md)
 
 ## Weekly reports in Finnish
+- [3. Viikkoraportti](documentation/viikkoraportit/viikkoraportti-3.md)
 - [2. Viikkoraportti](documentation/viikkoraportit/viikkoraportti-2.md)
 - [1. Viikkoraportti](documentation/viikkoraportit/viikkoraportti-1.md)
 
