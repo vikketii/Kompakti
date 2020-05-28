@@ -1,44 +1,58 @@
 package kompakti;
 
 import java.util.ArrayList;
-import kompakti.FileReader;
-import kompakti.LZW;
 
 public class Main {
     public static void main(String[] args) {
+        String filename = args[0];
+
+        FileReader fr = new FileReader();
+        LZW lzw = new LZW();
+
         try {
-            String filename = args[0];
 
-            FileReader fr = new FileReader();
-            LZW lzw = new LZW();
+            byte[] bytes = fr.readBytes(filename);
+            byte[] compressed = lzw.compress(bytes);
+            fr.writeFile(filename + ".lzw", compressed);
+            presentBytes(bytes, compressed);
 
-//            byte[] bytes = fr.readBytes(filename);
-//            byte[] compressed = lzw.compress(bytes);
-
-            String originalString = fr.readString(filename);
-            ArrayList<Integer> compressed = lzw.compressString(originalString);
-
-//            presentBytes(bytes, compressed);
-            presentString(originalString, compressed);
+//            System.out.println();
+//            System.out.println(compressed.length);
+//            byte[] wantedResult = new byte[]{4,16,66,16,1,0};
+//            System.out.println(wantedResult.length);
 
         } catch (Exception e) {
             System.out.println("Give filename as argument");
         }
+
+
+//        try {
+//            String originalString = fr.readString(filename);
+//            ArrayList<Integer> compressed = lzw.compressString(originalString);
+//            fr.writeString(filename + ".lzw", compressed);
+//
+//            presentString(originalString, compressed);
+//        } catch (Exception e) {
+//            System.out.println(e);
+//        }
+//            ArrayList<Integer> decompressed = lzw.decompressString(compressed);
+
     }
 
     private static void presentBytes(byte[] original, byte[] compressed) {
         System.out.println("Original size: " + original.length);
         System.out.println("Compressed size (with LZW): " + compressed.length);
-        System.out.println("Compress ratio: " + (compressed.length / original.length));
+
+        double ratio = (double) original.length / compressed.length;
+        System.out.printf("Compress ratio: %.2f", ratio);
     }
 
-    private static void presentString(String original, ArrayList<Integer> compressed) {
-        System.out.println("Original size: " + original.length());
-        System.out.println("Compressed size (with LZW): " + compressed.size());
-        int ratio = (int) (100 - ((double) compressed.size() / original.length()) * 100);
-
-        System.out.println("Compress ratio: " + ratio + "%");
-
-    }
+//    private static void presentString(String original, ArrayList<Integer> compressed) {
+//        System.out.println("Original size: " + original.length());
+//        System.out.println("Compressed size (with LZW): " + compressed.size());
+//
+//        double ratio = (double) original.length() / compressed.size();
+//        System.out.printf("Compress ratio: %.2f", ratio);
+//    }
 
 }
