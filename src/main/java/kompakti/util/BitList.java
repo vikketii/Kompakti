@@ -35,58 +35,28 @@ public class BitList {
         }
         return bits[index];
     }
+
 //    public void remove()
 
 
-    // Each item is presented as 12 bit in byte array.
+    // Each item is presented as 2 bytes
     public byte[] getListAsByteArray() {
-        int byteArraySize = (itemCount + (itemCount / 2)) + (itemCount % 2 == 0 ? 0 : 1);
+        int byteArraySize = itemCount * 2;
         byte[] byteArray = new byte[byteArraySize];
 
         int byteCount = 0;
-        byte helperByte = 0;
 
-        int evenLeftMask = 4080;
-        int evenRightMask = 15;
-        int oddLeftMask = 3840;
-        int oddRightMask = 255;
+        int leftMask = 65535 - 255;
+        int rightMask = 255;
 
         for (int i = 0; i < itemCount; i++) {
-            if (i % 2 == 0) {
-                byte left = (byte) ((bits[i] & evenLeftMask) >> 4);
-                byte right = (byte) ((bits[i] & evenRightMask) << 4);
-                byteArray[byteCount] = left;
-                helperByte = right;
-                byteCount++;
-
-                if (i == itemCount - 1) {
-                    // If last item
-                    byteArray[byteCount] = right;
-                }
-            } else {
-                byte left = (byte) (helperByte + ((bits[i] & oddLeftMask) >> 8));
-                byte right = (byte) (bits[i] & oddRightMask);
-                byteArray[byteCount] = left;
-                byteArray[byteCount + 1] = right;
-
-                byteCount += 2;
-            }
+            byteArray[byteCount] = (byte) ((bits[i] & leftMask) >> 8);
+            byteArray[byteCount + 1] = (byte) ((bits[i] & rightMask));
+            byteCount += 2;
         }
-
 
         return byteArray;
     }
-//    public byte[] getListAsByteArray(int maxValue) throws Exception {
-//        if (getMaxItem() > maxValue) {
-//            throw new Exception("BitList contains too big values for byte[]");
-//        }
-//
-//        byte[] byteBuffer = new byte[2];
-//        for (int i = 0; i < ; i++) {
-//
-//        }
-//
-//    }
 
 
     public int getMaxItem() {
