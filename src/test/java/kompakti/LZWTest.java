@@ -17,7 +17,7 @@ public class LZWTest {
     public void correctOutputWithShortString() {
         String testString = "ABABAB.";
         byte[] compressionResult = lzw.compress(testString.getBytes());
-        byte[] wantedResult = new byte[]{4,16,66,16,1,0};
+        byte[] wantedResult = new byte[]{0,65,0,66,1,0,1,0};
 
         assertArrayEquals(wantedResult, compressionResult);
     }

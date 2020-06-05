@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         String filename = args[0];
-
+//        String filename = "./test-resources/test-1.txt";
         FileReader fr = new FileReader();
         LZW lzw = new LZW();
 

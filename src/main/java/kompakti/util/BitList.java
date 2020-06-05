@@ -17,6 +17,10 @@ public class BitList {
         itemCount = 0;
     }
 
+    public BitList(byte[] bytes) {
+
+    }
+
     public int size() {
         return itemCount;
     }
@@ -37,26 +41,6 @@ public class BitList {
     }
 
 //    public void remove()
-
-
-    // Each item is presented as 2 bytes
-    public byte[] getListAsByteArray() {
-        int byteArraySize = itemCount * 2;
-        byte[] byteArray = new byte[byteArraySize];
-
-        int byteCount = 0;
-
-        int leftMask = 65535 - 255;
-        int rightMask = 255;
-
-        for (int i = 0; i < itemCount; i++) {
-            byteArray[byteCount] = (byte) ((bits[i] & leftMask) >> 8);
-            byteArray[byteCount + 1] = (byte) ((bits[i] & rightMask));
-            byteCount += 2;
-        }
-
-        return byteArray;
-    }
 
 
     public int getMaxItem() {
