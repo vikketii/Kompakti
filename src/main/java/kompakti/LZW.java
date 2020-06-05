@@ -1,8 +1,7 @@
 package kompakti;
 
 import kompakti.util.BitList;
-
-import java.util.HashMap;
+import kompakti.util.HashMap;
 
 public class LZW {
 
