@@ -20,19 +20,5 @@ public class FileReader {
         OutputStream outputStream = new FileOutputStream(filename);
         outputStream.write(bytesToWrite);
     }
-
-//    public String readString(String filename) throws IOException {
-//        File fileRead = new File(filename);
-//        String content = Files.readString(fileRead.toPath());
-//        return content;
-//    }
-//
-//    public void writeString(String filename, ArrayList<Integer> dataToWrite) throws IOException {
-//        Writer wr = new FileWriter(filename);
-//        for (int i : dataToWrite) {
-//            wr.write(Integer.toString(i));
-//        }
-//        wr.close();
-//    }
 }
 
