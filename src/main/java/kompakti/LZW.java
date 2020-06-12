@@ -44,7 +44,11 @@ public class LZW {
         return changeBitListTo2ByteArray(compressed);
     }
 
-
+    /**
+     * Decompress given lzw compressed data. Doesn't check if data is valid.
+     * @param compressedBytes
+     * @return decompressed bytes
+     */
     public byte[] decompress(byte[] compressedBytes) {
         BitList decompressed = new BitList();
         BitList compressed = change2ByteArrayToBitList(compressedBytes);
@@ -62,10 +66,6 @@ public class LZW {
         decompressed.add(element[1]);
 
         for (int i = 1; i < compressed.size(); i++) {
-//            if (i == compressed.size() - 3) {
-//                String test = new String(changeBitListToByteArray(decompressed));
-//                System.out.println(test);
-//            }
 
             current = compressed.get(i);
             element = decompressionDictionary[current];
@@ -103,11 +103,11 @@ public class LZW {
                 decompressed.add(valuesToAdd.get(j));
             }
 
-
             decompressionDictionary[nextCode][0] = compressed.get(i-1);
             decompressionDictionary[nextCode][1] = element[1];
             nextCode++;
 
+            // If dictionary is full, reset it
             if (nextCode == maxDictSize - 1) {
                 nextCode = 256;
                 for (int j = nextCode; j < maxDictSize; j++) {
