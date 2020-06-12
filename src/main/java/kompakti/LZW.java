@@ -5,7 +5,6 @@ import kompakti.util.HashMap;
 
 public class LZW {
 
-//    private int maxDictSize = 4096;   // Number of codewords 2^12 = 4096
     private int maxDictSize = 65536;   // Number of codewords 2^18 = 4096
 
 
@@ -40,25 +39,89 @@ public class LZW {
                 }
             }
         }
+        compressed.add(compressionDictionary.get(w));
 
-        byte[] compressedBytes = changeBitListTo2ByteArray(compressed);
-
-        return compressedBytes;
+        return changeBitListTo2ByteArray(compressed);
     }
+
 
     public byte[] decompress(byte[] compressedBytes) {
-        byte[] bytes = new byte[1];
-
+        BitList decompressed = new BitList();
         BitList compressed = change2ByteArrayToBitList(compressedBytes);
-        HashMap<String, Integer> compressionDictionary = initCompressionDictionary();
+        int[][] decompressionDictionary = new int[maxDictSize][2];
 
-        for (int i = 0; i < compressed.size(); i++) {
-            int b = compressed.get(i);
-
+        int nextCode;
+        for (nextCode = 0; nextCode < 256; nextCode++) {
+            decompressionDictionary[nextCode][0] = -1;          // previous position
+            decompressionDictionary[nextCode][1] = nextCode;    // value
         }
 
-        return bytes;
+        int current = compressed.get(0);
+        int[] element = decompressionDictionary[current];
+        int[] word = element;
+        decompressed.add(element[1]);
+
+        for (int i = 1; i < compressed.size(); i++) {
+//            if (i == compressed.size() - 3) {
+//                String test = new String(changeBitListToByteArray(decompressed));
+//                System.out.println(test);
+//            }
+
+            current = compressed.get(i);
+            element = decompressionDictionary[current];
+
+            // If dictionary doesn't have that word
+            if (element[0] == 0) {
+                element[0] = compressed.get(i - 1); // Element points to last entry
+
+                // Find first "character" of word
+                int previous = word[0];
+                if (previous == -1) {
+                    element[1] = element[0];
+                } else {
+                    while(true) {
+                        element[1] = decompressionDictionary[previous][1];
+                        if (decompressionDictionary[previous][0] == -1) break;
+                        previous = decompressionDictionary[previous][0];
+                    }
+                }
+            }
+
+            BitList valuesToAdd = new BitList();
+
+            // Get values
+            while(true) {
+                int value = decompressionDictionary[current][1];
+                valuesToAdd.add(value);
+                if (decompressionDictionary[current][0] == -1) break;
+
+                current = decompressionDictionary[current][0];
+            }
+
+            // Add values
+            for (int j = valuesToAdd.size() - 1; j >= 0; j--) {
+                decompressed.add(valuesToAdd.get(j));
+            }
+
+
+            decompressionDictionary[nextCode][0] = compressed.get(i-1);
+            decompressionDictionary[nextCode][1] = element[1];
+            nextCode++;
+
+            if (nextCode == maxDictSize - 1) {
+                nextCode = 256;
+                for (int j = nextCode; j < maxDictSize; j++) {
+                    decompressionDictionary[j][0] = 0;
+                    decompressionDictionary[j][1] = 0;
+                }
+            }
+
+            word = element;
+        }
+
+        return changeBitListToByteArray(decompressed);
     }
+
 
     private HashMap<String, Integer> initCompressionDictionary() {
         HashMap<String, Integer> compressionDictionary = new HashMap<>();
@@ -67,6 +130,7 @@ public class LZW {
         }
         return compressionDictionary;
     }
+
 
     // items are stored as 16 bits in byte array
     private byte[] changeBitListTo2ByteArray(BitList bitList) {
@@ -87,13 +151,16 @@ public class LZW {
         return byteArray;
     }
 
+
     private BitList change2ByteArrayToBitList(byte[] bytes) {
         int itemCount = bytes.length / 2;
         BitList bitList = new BitList(itemCount);
 
         int byteCount = 0;
         for (int i = 0; i < itemCount; i++) {
-            int value = (bytes[byteCount] << 8) + bytes[byteCount+1];
+            int left = bytes[byteCount] < 0 ? bytes[byteCount] + 256 : bytes[byteCount];
+            int right = bytes[byteCount + 1] < 0 ? bytes[byteCount + 1] + 256 : bytes[byteCount + 1];
+            int value = ((left << 8) + right);
             bitList.add(value);
             byteCount += 2;
         }
@@ -101,29 +168,11 @@ public class LZW {
         return bitList;
     }
 
-//    public ArrayList<Integer> compressString(String input) {
-//        int nextCode = 0;
-//        HashMap<String, Integer> compressionGuide = new HashMap<>();
-//        for (nextCode = 0; nextCode < 256; nextCode++) {
-//            compressionGuide.put(Character.toString((char) nextCode), nextCode);
-//        }
-//
-//        String w = "";
-//        System.out.println(input.charAt(2));
-//        ArrayList<Integer> compressed = new ArrayList<>();
-//
-//        for (char k : input.toCharArray()) {
-//            String wk = w + k;
-//            if (compressionGuide.containsKey(wk)) {
-//                w = wk;
-//            } else if (compressionGuide.size() < MAX_DICT_SIZE) {
-//                compressed.add(compressionGuide.get(w));
-//                compressionGuide.put(wk, nextCode);
-//                nextCode++;
-//                w = Character.toString(k);
-//            }
-//        }
-//
-//        return compressed;
-//    }
+    private byte[] changeBitListToByteArray(BitList bitList) {
+        byte[] bytes = new byte[bitList.size()];
+        for (int i = 0; i < bitList.size(); i++) {
+            bytes[i] = (byte) bitList.get(i);
+        }
+        return bytes;
+    }
 }
