@@ -48,8 +48,8 @@ public class Main {
 
         try {
             fr.writeFile(filename + ".lzw", compressed);
-            presentBytes(bytes, compressed);
             fr.writeFile(filename + ".lzwdecomp", decompressed);
+            presentBytes(bytes, compressed);
         } catch (Exception e) {
             System.out.println("Give filename as argument");
         }
@@ -62,8 +62,8 @@ public class Main {
 
         try {
             fr.writeFile(filename + ".huff", compressed);
-            presentBytes(bytes, compressed);
 //            fr.writeFile(filename + ".huffdecomp", decompressed);
+            presentBytes(bytes, compressed);
         } catch (Exception e) {
             System.out.println("Give filename as argument");
         }

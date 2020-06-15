@@ -1,12 +1,13 @@
 package kompakti.compression;
 
 import kompakti.util.BitList;
+import kompakti.util.Converter;
 import kompakti.util.HashMap;
 
 public class LZW {
 
-    private int maxDictSize = 65536;   // Number of codewords 2^18 = 4096
-
+    private int maxDictSize = 65536;   // Number of codewords 2^16 = 65536
+    private Converter converter = new Converter();
 
     /**
      * Compress given data with Lempel-Ziv-Welch algorithm.
@@ -16,7 +17,7 @@ public class LZW {
      */
     public byte[] compress(byte[] bytes) {
         HashMap<String, Integer> compressionDictionary = initCompressionDictionary();
-        BitList toCompress = changeByteArrayToBitList(bytes);
+        BitList toCompress = converter.changeByteArrayToBitList(bytes);
         BitList compressed = new BitList();
         int nextCode = 256;
 
@@ -42,7 +43,7 @@ public class LZW {
         }
         compressed.add(compressionDictionary.get(w));
 
-        return changeBitListTo2ByteArray(compressed);
+        return converter.changeBitListTo2ByteArray(compressed);
     }
 
     /**
@@ -52,7 +53,7 @@ public class LZW {
      */
     public byte[] decompress(byte[] compressedBytes) {
         BitList decompressed = new BitList();
-        BitList compressed = change2ByteArrayToBitList(compressedBytes);
+        BitList compressed = converter.change2ByteArrayToBitList(compressedBytes);
         int[][] decompressionDictionary = new int[maxDictSize][2];
 
         int nextCode;
@@ -120,7 +121,7 @@ public class LZW {
             word = element;
         }
 
-        return changeBitListToByteArray(decompressed);
+        return converter.changeBitListToByteArray(decompressed);
     }
 
 
@@ -130,58 +131,5 @@ public class LZW {
             compressionDictionary.put(Integer.toString(i), i);
         }
         return compressionDictionary;
-    }
-
-
-    // items are stored as 16 bits in byte array
-    private byte[] changeBitListTo2ByteArray(BitList bitList) {
-        int byteArraySize = bitList.size() * 2;
-        byte[] byteArray = new byte[byteArraySize];
-
-        int byteCount = 0;
-
-        int leftMask = 65535 - 255;
-        int rightMask = 255;
-
-        for (int i = 0; i < bitList.size(); i++) {
-            byteArray[byteCount] = (byte) ((bitList.get(i) & leftMask) >> 8);
-            byteArray[byteCount + 1] = (byte) ((bitList.get(i) & rightMask));
-            byteCount += 2;
-        }
-
-        return byteArray;
-    }
-
-
-    private BitList change2ByteArrayToBitList(byte[] bytes) {
-        int itemCount = bytes.length / 2;
-        BitList bitList = new BitList(itemCount);
-
-        int byteCount = 0;
-        for (int i = 0; i < itemCount; i++) {
-            int left = bytes[byteCount] < 0 ? bytes[byteCount] + 256 : bytes[byteCount];
-            int right = bytes[byteCount + 1] < 0 ? bytes[byteCount + 1] + 256 : bytes[byteCount + 1];
-            int value = ((left << 8) + right);
-            bitList.add(value);
-            byteCount += 2;
-        }
-
-        return bitList;
-    }
-
-    private byte[] changeBitListToByteArray(BitList bitList) {
-        byte[] bytes = new byte[bitList.size()];
-        for (int i = 0; i < bitList.size(); i++) {
-            bytes[i] = (byte) bitList.get(i);
-        }
-        return bytes;
-    }
-
-    private BitList changeByteArrayToBitList(byte[] bytes) {
-        BitList bitList = new BitList();
-        for (int i = 0; i < bytes.length ; i++) {
-            bitList.add(bytes[i] + 128);
-        }
-        return bitList;
     }
 }
