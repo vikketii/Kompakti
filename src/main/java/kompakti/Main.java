@@ -1,5 +1,8 @@
 package kompakti;
 
+import kompakti.compression.Huffman;
+import kompakti.compression.LZW;
+
 public class Main {
     public static void main(String[] args) {
         String flag = "";
@@ -12,9 +15,6 @@ public class Main {
             System.err.println("Use -h to get help how to use this program");
             System.exit(1);
         }
-
-//        flag = "--lzw";
-//        filename = "./test-resources/test-picture.txt";
 
         FileReader fr = new FileReader();
         byte[] bytes = new byte[0];
@@ -36,7 +36,7 @@ public class Main {
                 help();
                 break;
             default:
-                System.err.println("Invalid argument");
+                System.err.println("Invalid argument " + flag);
                 System.exit(1);
         }
     }

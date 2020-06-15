@@ -1,4 +1,4 @@
-package kompakti;
+package kompakti.compression;
 
 import kompakti.util.BitList;
 import kompakti.util.HashMap;
@@ -16,13 +16,14 @@ public class LZW {
      */
     public byte[] compress(byte[] bytes) {
         HashMap<String, Integer> compressionDictionary = initCompressionDictionary();
+        BitList toCompress = changeByteArrayToBitList(bytes);
         BitList compressed = new BitList();
         int nextCode = 256;
 
-        String w = "" + (bytes[0] < 0 ? bytes[0] + 256 : bytes[0]);
+        String w = "" + toCompress.get(0);
 
-        for (int i = 1; i < bytes.length; i++) {
-            int b = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
+        for (int i = 1; i < toCompress.size(); i++) {
+            int b = toCompress.get(i);
             String wk = w + b;
 
             if (compressionDictionary.containsKey(wk)) {
@@ -63,7 +64,7 @@ public class LZW {
         int current = compressed.get(0);
         int[] element = decompressionDictionary[current];
         int[] word = element;
-        decompressed.add(element[1]);
+        decompressed.add(element[1]-128);
 
         for (int i = 1; i < compressed.size(); i++) {
 
@@ -100,7 +101,7 @@ public class LZW {
 
             // Add values
             for (int j = valuesToAdd.size() - 1; j >= 0; j--) {
-                decompressed.add(valuesToAdd.get(j));
+                decompressed.add(valuesToAdd.get(j)-128);
             }
 
             decompressionDictionary[nextCode][0] = compressed.get(i-1);
@@ -174,5 +175,13 @@ public class LZW {
             bytes[i] = (byte) bitList.get(i);
         }
         return bytes;
+    }
+
+    private BitList changeByteArrayToBitList(byte[] bytes) {
+        BitList bitList = new BitList();
+        for (int i = 0; i < bytes.length ; i++) {
+            bitList.add(bytes[i] + 128);
+        }
+        return bitList;
     }
 }
