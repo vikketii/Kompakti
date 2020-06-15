@@ -1,5 +1,6 @@
 package kompakti;
 
+import kompakti.compression.LZW;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class LZWTest {
     public void correctCompressionOfShortString1() {
         String testString = "ABABAB";
         byte[] compressionResult = lzw.compress(testString.getBytes());
-        byte[] correctResult = new byte[]{0,65,0,66,1,0,1,0};
+        byte[] correctResult = new byte[]{0,-63,0,-62,1,0,1,0};
         assertArrayEquals(correctResult, compressionResult);
     }
 
@@ -25,7 +26,7 @@ public class LZWTest {
     public void correctCompressionOfShortString2() {
         String testString = "AAABAABBBB";
         byte[] compressionResult = lzw.compress(testString.getBytes());
-        byte[] correctResult = new byte[]{0,65,1,0,0,66,1,1,0,66,1,4};
+        byte[] correctResult = new byte[]{0,-63,1,0,0,-62,1,1,0,-62,1,4};
         assertArrayEquals(correctResult, compressionResult);
     }
 
@@ -33,28 +34,28 @@ public class LZWTest {
     public void correctCompressionOfShortString3() {
         String testString = "ACBBAAC";
         byte[] compressionResult = lzw.compress(testString.getBytes());
-        byte[] correctResult = new byte[]{0,65,0,67,0,66,0,66,0,65,1,0};
+        byte[] correctResult = new byte[]{0,-63,0,-61,0,-62,0,-62,0,-63,1,0};
         assertArrayEquals(correctResult, compressionResult);
     }
 
     @Test
     public void correctDecompressionOfShortString1() {
         String correct = "ABABAB";
-        byte[] decompressionResult = lzw.decompress(new byte[]{0,65,0,66,1,0,1,0});
+        byte[] decompressionResult = lzw.decompress(new byte[]{0,-63,0,-62,1,0,1,0});
         assertArrayEquals(decompressionResult, correct.getBytes());
     }
 
     @Test
     public void correctDecompressionOfShortString2() {
         String correct = "AAABAABBBB";
-        byte[] decompressionResult = lzw.decompress(new byte[]{0,65,1,0,0,66,1,1,0,66,1,4});
+        byte[] decompressionResult = lzw.decompress(new byte[]{0,-63,1,0,0,-62,1,1,0,-62,1,4});
         assertArrayEquals(decompressionResult, correct.getBytes());
     }
 
     @Test
     public void correctDecompressionOfShortString3() {
         String correct = "ACBBAAC";
-        byte[] decompressionResult = lzw.decompress(new byte[]{0,65,0,67,0,66,0,66,0,65,1,0});
+        byte[] decompressionResult = lzw.decompress(new byte[]{0,-63,0,-61,0,-62,0,-62,0,-63,1,0});
         assertArrayEquals(decompressionResult, correct.getBytes());
     }
 }
