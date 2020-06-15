@@ -36,8 +36,9 @@ public class LZW {
                 w = Integer.toString(b);
 
                 // If dictionary is full, reset it
-                if (compressionDictionary.size() == maxDictSize - 1) {
+                if (compressionDictionary.size() >= maxDictSize - 1) {
                     compressionDictionary = initCompressionDictionary();
+                    nextCode = 256;
                 }
             }
         }
@@ -65,7 +66,7 @@ public class LZW {
         int current = compressed.get(0);
         int[] element = decompressionDictionary[current];
         int[] word = element;
-        decompressed.add(element[1]-128);
+        decompressed.add(element[1]);
 
         for (int i = 1; i < compressed.size(); i++) {
 
@@ -102,15 +103,17 @@ public class LZW {
 
             // Add values
             for (int j = valuesToAdd.size() - 1; j >= 0; j--) {
-                decompressed.add(valuesToAdd.get(j)-128);
+                decompressed.add(valuesToAdd.get(j));
             }
 
             decompressionDictionary[nextCode][0] = compressed.get(i-1);
-            decompressionDictionary[nextCode][1] = element[1];
+            decompressionDictionary[nextCode][1] = valuesToAdd.get(valuesToAdd.size()-1);
             nextCode++;
+            word = element;
 
             // If dictionary is full, reset it
-            if (nextCode == maxDictSize - 1) {
+            if (nextCode >= maxDictSize - 1) {
+                word[0] = -1;
                 nextCode = 256;
                 for (int j = nextCode; j < maxDictSize; j++) {
                     decompressionDictionary[j][0] = 0;
@@ -118,7 +121,6 @@ public class LZW {
                 }
             }
 
-            word = element;
         }
 
         return converter.changeBitListToByteArray(decompressed);
