@@ -48,7 +48,7 @@ public class Converter {
 
     public BitList changeByteArrayToBitList(byte[] bytes) {
         BitList bitList = new BitList();
-        for (int i = 0; i < bytes.length ; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             bitList.add(Byte.toUnsignedInt(bytes[i]));
         }
         return bitList;

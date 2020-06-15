@@ -27,10 +27,10 @@ public class Main {
 
         switch (flag) {
             case "--lzw":
-                LZWCompression(bytes, fr, filename);
+                lzwCompression(bytes, fr, filename);
                 break;
             case "--huffman":
-                HuffmanCompression(bytes, fr, filename);
+                huffmanCompression(bytes, fr, filename);
                 break;
             case "-h":
                 help();
@@ -41,7 +41,7 @@ public class Main {
         }
     }
 
-    private static void LZWCompression(byte[] bytes, FileReader fr, String filename) {
+    private static void lzwCompression(byte[] bytes, FileReader fr, String filename) {
         LZW lzw = new LZW();
         byte[] compressed = lzw.compress(bytes);
         byte[] decompressed = lzw.decompress(compressed);
@@ -55,7 +55,7 @@ public class Main {
         }
     }
 
-    private static void HuffmanCompression(byte[] bytes, FileReader fr, String filename) {
+    private static void huffmanCompression(byte[] bytes, FileReader fr, String filename) {
         Huffman huff = new Huffman();
         byte[] compressed = huff.compress(bytes);
 //        byte[] decompressed = huff.decompress(compressed);

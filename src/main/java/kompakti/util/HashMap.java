@@ -37,14 +37,20 @@ public class HashMap<K, V> {
 
     public boolean containsKey(String key) {
         int hash = calculateHashValue(key);
-        if (nodes[hash] == null) return false;
+        if (nodes[hash] == null) {
+            return false;
+        }
 
         Node currentNode = nodes[hash];
-        if (currentNode.getKey().equals(key)) return true;
+        if (currentNode.getKey().equals(key)) {
+            return true;
+        }
 
         while (currentNode.getNext() != null) {
             currentNode = currentNode.getNext();
-            if (currentNode.getKey().equals(key)) return true;
+            if (currentNode.getKey().equals(key)) {
+                return true;
+            }
         }
 
         return false;
@@ -62,7 +68,7 @@ public class HashMap<K, V> {
     private int calculateHashValue(String key) {
         int hash = 0;
         for (char c : key.toCharArray()) {
-            hash = (hash*31 + c) % mapSize;
+            hash = (hash * 31 + c) % mapSize;
         }
         return hash;
     }

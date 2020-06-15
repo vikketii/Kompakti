@@ -82,9 +82,11 @@ public class LZW {
                 if (previous == -1) {
                     element[1] = element[0];
                 } else {
-                    while(true) {
+                    while (true) {
                         element[1] = decompressionDictionary[previous][1];
-                        if (decompressionDictionary[previous][0] == -1) break;
+                        if (decompressionDictionary[previous][0] == -1) {
+                            break;
+                        }
                         previous = decompressionDictionary[previous][0];
                     }
                 }
@@ -93,10 +95,12 @@ public class LZW {
             BitList valuesToAdd = new BitList();
 
             // Get values
-            while(true) {
+            while (true) {
                 int value = decompressionDictionary[current][1];
                 valuesToAdd.add(value);
-                if (decompressionDictionary[current][0] == -1) break;
+                if (decompressionDictionary[current][0] == -1) {
+                    break;
+                }
 
                 current = decompressionDictionary[current][0];
             }
@@ -106,8 +110,8 @@ public class LZW {
                 decompressed.add(valuesToAdd.get(j));
             }
 
-            decompressionDictionary[nextCode][0] = compressed.get(i-1);
-            decompressionDictionary[nextCode][1] = valuesToAdd.get(valuesToAdd.size()-1);
+            decompressionDictionary[nextCode][0] = compressed.get(i - 1);
+            decompressionDictionary[nextCode][1] = valuesToAdd.get(valuesToAdd.size() - 1);
             nextCode++;
             word = element;
 
