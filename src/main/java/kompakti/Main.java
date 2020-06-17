@@ -12,7 +12,7 @@ public class Main {
             flag = args[0];
             filename = args[1];
         } catch (Exception e) {
-            System.err.println("Use -h to get help how to use this program");
+            help();
             System.exit(1);
         }
 
@@ -32,11 +32,9 @@ public class Main {
             case "--huffman":
                 huffmanCompression(bytes, fr, filename);
                 break;
-            case "-h":
-                help();
-                break;
             default:
                 System.err.println("Invalid argument " + flag);
+                help();
                 System.exit(1);
         }
     }
