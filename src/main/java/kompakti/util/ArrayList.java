@@ -1,24 +1,20 @@
 package kompakti.util;
 
-public class BitList {
-    private int[] bits;
+public class ArrayList {
+    private int[] items;
     private int itemCount;
     private int arraySize;
 
-    public BitList() {
+    public ArrayList() {
         arraySize = 2048;
-        bits = new int[arraySize];
+        items = new int[arraySize];
         itemCount = 0;
     }
 
-    public BitList(int arraySize) {
+    public ArrayList(int arraySize) {
         this.arraySize = arraySize;
-        bits = new int[arraySize];
+        items = new int[arraySize];
         itemCount = 0;
-    }
-
-    public BitList(byte[] bytes) {
-
     }
 
     public int size() {
@@ -29,7 +25,7 @@ public class BitList {
         if (itemCount == arraySize - 1) {
             increaseSize();
         }
-        bits[itemCount] = value;
+        items[itemCount] = value;
         itemCount++;
     }
 
@@ -37,35 +33,24 @@ public class BitList {
         if (index < 0 || index >= itemCount) {
             throw new IndexOutOfBoundsException("BitList index out of bounds");
         }
-        return bits[index];
-    }
-
-//    public void remove()
-
-
-    public int getMaxItem() {
-        int max = 0;
-        for (int i = 0; i < itemCount; i++) {
-            max = max > bits[i] ? max : bits[i];
-        }
-        return max;
+        return items[index];
     }
 
     private void increaseSize() {
         int[] newBits = new int[arraySize + arraySize / 2];
         for (int i = 0; i < arraySize; i++) {
-            newBits[i] = bits[i];
+            newBits[i] = items[i];
         }
-        bits = newBits;
+        items = newBits;
         arraySize += arraySize / 2;
     }
 
     private void decreaseSize() {
         int[] newBits = new int[arraySize / 2];
         for (int i = 0; i < (arraySize / 4); i++) {
-            newBits[i] = bits[i];
+            newBits[i] = items[i];
         }
-        bits = newBits;
+        items = newBits;
         arraySize /= 2;
     }
 
