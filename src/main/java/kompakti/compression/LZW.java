@@ -1,6 +1,6 @@
 package kompakti.compression;
 
-import kompakti.util.BitList;
+import kompakti.util.ArrayList;
 import kompakti.util.Converter;
 import kompakti.util.HashMap;
 
@@ -17,8 +17,8 @@ public class LZW {
      */
     public byte[] compress(byte[] bytes) {
         HashMap<String, Integer> compressionDictionary = initCompressionDictionary();
-        BitList toCompress = converter.changeByteArrayToBitList(bytes);
-        BitList compressed = new BitList();
+        ArrayList toCompress = converter.changeByteArrayToArrayList(bytes);
+        ArrayList compressed = new ArrayList();
         int nextCode = 256;
 
         String w = "" + toCompress.get(0);
@@ -44,7 +44,7 @@ public class LZW {
         }
         compressed.add(compressionDictionary.get(w));
 
-        return converter.changeBitListTo2ByteArray(compressed);
+        return converter.changeArrayListTo2ByteArray(compressed);
     }
 
     /**
@@ -53,8 +53,8 @@ public class LZW {
      * @return decompressed bytes
      */
     public byte[] decompress(byte[] compressedBytes) {
-        BitList decompressed = new BitList();
-        BitList compressed = converter.change2ByteArrayToBitList(compressedBytes);
+        ArrayList decompressed = new ArrayList();
+        ArrayList compressed = converter.change2ByteArrayToArrayList(compressedBytes);
         int[][] decompressionDictionary = new int[maxDictSize][2];
 
         int nextCode;
@@ -92,7 +92,7 @@ public class LZW {
                 }
             }
 
-            BitList valuesToAdd = new BitList();
+            ArrayList valuesToAdd = new ArrayList();
 
             // Get values
             while (true) {
@@ -124,10 +124,9 @@ public class LZW {
                     decompressionDictionary[j][1] = 0;
                 }
             }
-
         }
 
-        return converter.changeBitListToByteArray(decompressed);
+        return converter.changeArrayListToByteArray(decompressed);
     }
 
 
