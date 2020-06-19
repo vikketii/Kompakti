@@ -1,4 +1,4 @@
-package kompakti;
+package kompakti.compression;
 
 import kompakti.compression.LZW;
 import org.junit.Before;

@@ -12,23 +12,23 @@ public class ConverterTest {
     public void setUp() { converter = new Converter(); }
 
     @Test
-    public void changeBitListToByteArrayIsCorrect() {
-        BitList bitListToConvert = new BitList();
-        bitListToConvert.add(0);
-        bitListToConvert.add(10);
-        bitListToConvert.add(127);
-        bitListToConvert.add(128);
-        bitListToConvert.add(255);
-        byte[] result = converter.changeBitListToByteArray(bitListToConvert);
+    public void changeArrayListToByteArrayIsCorrect() {
+        ArrayList arrayListToConvert = new ArrayList();
+        arrayListToConvert.add(0);
+        arrayListToConvert.add(10);
+        arrayListToConvert.add(127);
+        arrayListToConvert.add(128);
+        arrayListToConvert.add(255);
+        byte[] result = converter.changeArrayListToByteArray(arrayListToConvert);
         assertArrayEquals(new byte[]{0, 10, 127, -128, -1}, result);
     }
 
     @Test
-    public void changeByteArrayToBitListIsCorrect() {
+    public void changeByteArrayToArrayListIsCorrect() {
         byte[] bytesToConvert = new byte[] {0, 10, 127, -128, -1};
-        BitList result = converter.changeByteArrayToBitList(bytesToConvert);
+        ArrayList result = converter.changeByteArrayToArrayList(bytesToConvert);
 
-        BitList correct = new BitList();
+        ArrayList correct = new ArrayList();
         correct.add(0);
         correct.add(10);
         correct.add(127);
@@ -42,17 +42,17 @@ public class ConverterTest {
     }
 
     @Test
-    public void changeBitListTo2ByteArrayIsCorrect() {
-        BitList bitListToConvert = new BitList();
-        bitListToConvert.add(0);
-        bitListToConvert.add(127);
-        bitListToConvert.add(128);
-        bitListToConvert.add(255);
-        bitListToConvert.add(256);
-        bitListToConvert.add(32767);
-        bitListToConvert.add(32768); // 2^15
-        bitListToConvert.add(65535);
-        byte[] result = converter.changeBitListTo2ByteArray(bitListToConvert);
+    public void changeArrayListTo2ByteArrayIsCorrect() {
+        ArrayList arrayListToConvert = new ArrayList();
+        arrayListToConvert.add(0);
+        arrayListToConvert.add(127);
+        arrayListToConvert.add(128);
+        arrayListToConvert.add(255);
+        arrayListToConvert.add(256);
+        arrayListToConvert.add(32767);
+        arrayListToConvert.add(32768); // 2^15
+        arrayListToConvert.add(65535);
+        byte[] result = converter.changeArrayListTo2ByteArray(arrayListToConvert);
         byte[] correct = {
                 0, 0,
                 0, 127,
@@ -68,11 +68,11 @@ public class ConverterTest {
     }
 
     @Test
-    public void change2ByteArrayToBitListIsCorrect() {
+    public void change2ByteArrayToArrayListIsCorrect() {
         byte[] bytesToConvert = {0, 0, 0, 127, 0, -128, 0, -1, 1, 0, 127, -1, -128, 0, -1, -1};
-        BitList result = converter.change2ByteArrayToBitList(bytesToConvert);
+        ArrayList result = converter.change2ByteArrayToArrayList(bytesToConvert);
 
-        BitList correct = new BitList();
+        ArrayList correct = new ArrayList();
         correct.add(0);
         correct.add(127);
         correct.add(128);
