@@ -19,7 +19,7 @@ public class BitList {
         return byteCount;
     }
 
-    public void add(boolean value) {
+    public void addBit(boolean value) {
         if (value) {
             bytes[byteCount] = (byte) (bytes[byteCount] | (128 >> bitPosition));
         }
@@ -35,6 +35,14 @@ public class BitList {
             increaseSize();
         }
     }
+
+    public void addByte(byte value) {
+        for (int i = 0; i < 8 ; i++) {
+            addBit((value & (128 >> i)) != 0);
+        }
+    }
+
+
 
     public boolean getBit(int index) {
         if (index < 0 || index >= bitCount) {
