@@ -21,7 +21,6 @@ public class Converter {
         return byteArray;
     }
 
-
     public ArrayList change2ByteArrayToArrayList(byte[] bytes) {
         int itemCount = bytes.length / 2;
         ArrayList arrayList = new ArrayList(itemCount);
@@ -46,14 +45,6 @@ public class Converter {
         return bytes;
     }
 
-    public byte[] changeBitListToByteArray(BitList bitList) {
-        byte[] bytes = new byte[bitList.size()];
-        for (int i = 0; i < bitList.size(); i++) {
-            bytes[i] = (byte) bitList.getByte(i);
-        }
-        return bytes;
-    }
-
     public ArrayList changeByteArrayToArrayList(byte[] bytes) {
         ArrayList arrayList = new ArrayList();
         for (int i = 0; i < bytes.length; i++) {
@@ -61,4 +52,14 @@ public class Converter {
         }
         return arrayList;
     }
+
+    public byte[] changeBitListToByteArray(BitList bitList) {
+        byte[] bytes = new byte[bitList.byteSize()];
+        for (int i = 0; i < bitList.byteSize(); i++) {
+            bytes[i] = bitList.getByte(i);
+        }
+        return bytes;
+    }
+
+
 }

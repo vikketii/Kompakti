@@ -22,7 +22,6 @@ public class BinaryTree {
             queue.add(new BinaryNode(a, b, a.getFrequency() + b.getFrequency()));
         }
 
-//            System.out.println((char) (bn.getValue()) + " " + bn.getFrequency());
         this.root = queue.poll();
     }
 

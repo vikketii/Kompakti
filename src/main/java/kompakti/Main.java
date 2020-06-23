@@ -73,11 +73,11 @@ public class Main {
     private static void huffmanCompression(byte[] bytes, FileReader fr, String filename) {
         Huffman huff = new Huffman();
         byte[] compressed = huff.compress(bytes);
-//        byte[] decompressed = huff.decompress(compressed);
+        byte[] decompressed = huff.decompress(compressed);
 
         try {
             fr.writeFile(filename + ".huff", compressed);
-//            fr.writeFile(filename + ".huffdecomp", decompressed);
+            fr.writeFile(filename + ".huffdecomp", decompressed);
             presentBytes(bytes, compressed);
         } catch (Exception e) {
             System.out.println("Give filename as argument");

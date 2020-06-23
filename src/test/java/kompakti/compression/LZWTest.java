@@ -39,13 +39,6 @@ public class LZWTest {
     }
 
     @Test
-    public void correctCompressionOfShortString4() {
-        String testString = "öaöaö";
-        byte[] compressionResult = lzw.compress(testString.getBytes());
-        byte[] correctResult = new byte[]{0,-118};
-    }
-
-    @Test
     public void correctDecompressionOfShortString1() {
         String correct = "ABABAB";
         byte[] decompressionResult = lzw.decompress(new byte[]{0,65,0,66,1,0,1,0});
