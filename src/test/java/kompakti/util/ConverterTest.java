@@ -88,4 +88,13 @@ public class ConverterTest {
         }
     }
 
+    @Test
+    public void changeByteToUnsignedIntIsCorrect() {
+        assertEquals(0, converter.byteToUnsignedInt((byte) 0));
+        assertEquals(127, converter.byteToUnsignedInt((byte) 127));
+        assertEquals(128, converter.byteToUnsignedInt((byte) 128));
+        assertEquals(255, converter.byteToUnsignedInt((byte) 255));
+        assertEquals(0, converter.byteToUnsignedInt((byte) 256));
+    }
+
 }

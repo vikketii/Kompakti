@@ -61,5 +61,7 @@ public class Converter {
         return bytes;
     }
 
-
+    public int byteToUnsignedInt(byte b) {
+        return b < 0 ? 256 + b : b;
+    }
 }
