@@ -16,24 +16,22 @@ public class BitList {
     }
 
     public int size() {
-        return byteCount;
+        return bitCount;
     }
 
+    public int byteSize() { return byteCount; }
+
     public void addBit(boolean value) {
+        if (bitPosition == 0) { byteCount++; }
+
         if (value) {
-            bytes[byteCount] = (byte) (bytes[byteCount] | (128 >> bitPosition));
+            bytes[bitCount / 8] |= (128 >> bitPosition);
         }
 
         bitCount++;
         bitPosition++;
-        if (bitPosition == 8) {
-            byteCount++;
-            bitPosition = 0;
-        }
-
-        if (byteCount == arraySize - 1) {
-            increaseSize();
-        }
+        if (bitPosition == 8) { bitPosition = 0; }
+        if (byteCount == arraySize - 1) { increaseSize(); }
     }
 
     public void addByte(byte value) {
@@ -41,8 +39,6 @@ public class BitList {
             addBit((value & (128 >> i)) != 0);
         }
     }
-
-
 
     public boolean getBit(int index) {
         if (index < 0 || index >= bitCount) {
@@ -53,14 +49,12 @@ public class BitList {
     }
 
     public byte getByte(int index) {
-        if (bitCount == 0 || index < 0 || index > byteCount) {
+        if (bitCount == 0 || index < 0 || index >= byteCount) {
             throw new IndexOutOfBoundsException("BitList index out of bounds");
         }
 
         return bytes[index];
     }
-
-//    public void remove()
 
     private void increaseSize() {
         byte[] newBytes = new byte[arraySize + arraySize / 2];
