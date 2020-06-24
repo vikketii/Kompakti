@@ -64,4 +64,27 @@ public class Converter {
     public int byteToUnsignedInt(byte b) {
         return b < 0 ? 256 + b : b;
     }
+
+    public String addOneToBitString(String bits) {
+        int length = bits.length();
+        int value = 0;
+
+        for (int i = 0; i < length; i++) {
+            if (bits.charAt(i) == '1') {
+                value++;
+            }
+            if (i < length - 1) {
+               value <<= 1;
+            }
+        }
+
+        value++;
+
+        String result = Integer.toBinaryString(value);
+        while (result.length() < length) {
+            result = "0" + result;
+        }
+
+        return result;
+    }
 }

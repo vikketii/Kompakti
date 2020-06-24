@@ -22,16 +22,15 @@ public class BinaryTree {
         this.root = queue.poll();
     }
 
-    public BinaryTree(int[][] dictionary) {
+    public BinaryTree(String[] dictionary) {
         root = new BinaryNode((byte) -1, 0);
         BinaryNode current = root;
 
         for (int i = 0; i < dictionary.length; i++) {
-            if (dictionary[i][1] != 0) {
-                int value = dictionary[i][0];
-                for (int j = dictionary[i][1] - 1; j >= 0; j--) {
-                    int direction = value & (1 << j);
-                    if (direction != 0) {
+            if (dictionary[i] != null) {
+                String value = dictionary[i];
+                for (int j = 0; j < value.length(); j++) {
+                    if (value.charAt(j) == '1') {
                         current = current.getRightOrCreate();
                     } else {
                         current = current.getLeftOrCreate();

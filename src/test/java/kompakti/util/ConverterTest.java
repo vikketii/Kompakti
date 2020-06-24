@@ -97,4 +97,17 @@ public class ConverterTest {
         assertEquals(0, converter.byteToUnsignedInt((byte) 256));
     }
 
+    @Test
+    public void addOneToBitStringIsCorrect() {
+        String bitString = "0";
+        bitString = converter.addOneToBitString(bitString);
+        assertEquals("1", bitString);
+
+        bitString = "010";
+        bitString = converter.addOneToBitString(bitString);
+        assertEquals("011", bitString);
+//        bitString = converter.addOneToBitString(bitString);
+//        assertEquals("100", bitString);
+    }
+
 }

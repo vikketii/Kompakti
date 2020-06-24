@@ -18,23 +18,25 @@ public class Huffman {
         BinaryTree binaryTree = new BinaryTree(frequencies);
         BinaryNode root = binaryTree.getRoot();
 
-        int[][] dictionary = new int[256][2]; // [0] value, [1] length of value
+        String[] dictionary = new String[256];
 
-        fillDictionary(root, dictionary, 0,0);
+        fillDictionary(root, dictionary, "");
         convertDictionaryToCanonical(dictionary);
 
         byte[] compressed = convertToHuffman(bytes, dictionary);
 //        byte[] result = new byte[compressed.length + 128]; // 128 = 256/2, because canonical dictionary fits
-        byte[] result = new byte[compressed.length + 256 + 3]; // 128 = 256/2, because canonical dictionary fits
+        byte[] result = new byte[compressed.length + 256 + 4]; // 128 = 256/2, because canonical dictionary fits
 
 
         // Huffman codes
         for (int i = 0; i < dictionary.length; i++) {
-            result[i] = (byte) dictionary[i][1];
+            if (dictionary[i] != null) {
+                result[i] = (byte) dictionary[i].length();
+            }
         }
 
         // Size of original data
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             int move = (2-i) * 8;
             byte current = (byte) (bytes.length >> move);
             result[dictionary.length + i] = current;
@@ -42,7 +44,7 @@ public class Huffman {
 
         // Compressed data
         for (int i = 0; i < compressed.length; i++) {
-            result[259 + i] = compressed[i];
+            result[260 + i] = compressed[i];
         }
 
         return result;
@@ -50,18 +52,18 @@ public class Huffman {
 
     public byte[] decompress(byte[] bytes) {
         BitList result = new BitList();
-        int[][] dictionary = readDictionary(bytes);
+        String[] dictionary = readDictionary(bytes);
         BinaryTree binaryTree = new BinaryTree(dictionary);
         BinaryNode root = binaryTree.getRoot();
 
         int lengthOfData = 0;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             lengthOfData += bytes[256 + i] << ((2-i) * 8);
         }
 
         BitList bitList = new BitList();
-        for (int i = 259; i < bytes.length; i++) {
+        for (int i = 260; i < bytes.length; i++) {
             bitList.addByte(bytes[i]);
         }
 
@@ -79,7 +81,6 @@ public class Huffman {
                     current = current.getLeft();
                 }
                 i++;
-                System.out.println(i);
             }
             result.addByte(current.getValue());
             current = root;
@@ -89,59 +90,58 @@ public class Huffman {
         return converter.changeBitListToByteArray(result);
     }
 
-    private int[][] readDictionary(byte[] bytes) {
-        int[][] dictionary = new int[256][2];
+    private String[] readDictionary(byte[] bytes) {
+        String[] dictionary = new String[256];
 
         for (int i = 0; i < 256; i++) {
-            dictionary[i][1] = bytes[i];
+            for (int j = 0; j < bytes[i]; j++) {
+                if (j == 0) { dictionary[i] = ""; }
+                dictionary[i] += "0";
+            }
         }
 
         convertDictionaryToCanonical(dictionary);
         return dictionary;
     }
 
-    private void fillDictionary(BinaryNode node, int[][] dictionary, int path, int length) {
+    private void fillDictionary(BinaryNode node, String[] dictionary, String path) {
         if (node.isLeaf()) {
             int nodeValue = converter.byteToUnsignedInt(node.getValue());
-            dictionary[nodeValue][0] = path;
-            dictionary[nodeValue][1] = length;
+            dictionary[nodeValue] = path;
         } else {
             BinaryNode left = node.getLeft();
             BinaryNode right = node.getRight();
-            path <<= 1;
-            length++;
             if (left != null) {
-                fillDictionary(left, dictionary, path, length);
+                fillDictionary(left, dictionary, path + "0");
             }
             if (right != null) {
-                path++;
-                fillDictionary(right, dictionary, path, length);
+                fillDictionary(right, dictionary, path + "1");
             }
         }
     }
 
-    private byte[] convertToHuffman(byte[] bytes, int[][] dictionary) {
+    private byte[] convertToHuffman(byte[] bytes, String[] dictionary) {
         BitList bitList = new BitList();
         for (int i = 0; i < bytes.length; i++) {
             int value = converter.byteToUnsignedInt(bytes[i]);
-            for (int j = dictionary[value][1]; j > 0; j--) {
-                bitList.addBit((dictionary[value][0] & (1 << (j-1))) != 0);
+            for (int j = 0; j < dictionary[value].length(); j++) {
+                bitList.addBit(dictionary[value].charAt(j) == '1');
             }
         }
         return converter.changeBitListToByteArray(bitList);
     }
 
 
-    private void convertDictionaryToCanonical(int[][] dictionary) {
-        int nextValue = 0;
-        for (int i = 1; i < 9; i++) {
+    private void convertDictionaryToCanonical(String[] dictionary) {
+        String nextValue = "0";
+        for (int i = 1; i < 64; i++) {
             for (int j = 0; j < dictionary.length; j++) {
-                if (dictionary[j][1] == i) {
-                    dictionary[j][0] = nextValue;
-                    nextValue++;
+                if (dictionary[j] != null && dictionary[j].length() == i) {
+                    dictionary[j] = nextValue;
+                    nextValue = converter.addOneToBitString(nextValue);
                 }
             }
-            nextValue <<= 1;
+            nextValue += "0";
         }
     }
 
