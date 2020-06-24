@@ -1,6 +1,6 @@
 package kompakti.util;
 
-public class BinaryNode {
+public class BinaryNode implements Comparable<BinaryNode> {
     private BinaryNode left;
     private BinaryNode right;
     private int frequency;
@@ -24,8 +24,30 @@ public class BinaryNode {
         return left;
     }
 
+    public void setLeft(BinaryNode left) {
+        this.left = left;
+    }
+
+    public BinaryNode getLeftOrCreate() {
+        if (this.left == null) {
+            setLeft(new BinaryNode((byte) -1, 0));
+        }
+        return getLeft();
+    }
+
     public BinaryNode getRight() {
         return right;
+    }
+
+    public void setRight(BinaryNode right) {
+        this.right = right;
+    }
+
+    public BinaryNode getRightOrCreate() {
+        if (right == null) {
+            setRight(new BinaryNode((byte) -1, 0));
+        }
+        return getRight();
     }
 
     public int getFrequency() {
@@ -36,7 +58,16 @@ public class BinaryNode {
         return value;
     }
 
+    public void setValue(byte value) {
+        this.value = value;
+    }
+
     public boolean isLeaf() {
         return (left == null && right == null);
+    }
+
+    @Override
+    public int compareTo(BinaryNode other) {
+        return this.getFrequency() - other.getFrequency();
     }
 }
