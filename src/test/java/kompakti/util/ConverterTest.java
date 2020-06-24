@@ -106,8 +106,8 @@ public class ConverterTest {
         bitString = "010";
         bitString = converter.addOneToBitString(bitString);
         assertEquals("011", bitString);
-//        bitString = converter.addOneToBitString(bitString);
-//        assertEquals("100", bitString);
+        bitString = converter.addOneToBitString(bitString);
+        assertEquals("100", bitString);
     }
 
 }
