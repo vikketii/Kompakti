@@ -7,13 +7,8 @@ import java.util.ArrayList;
 public class FileReader {
     public byte[] readBytes(String filename) throws IOException {
         InputStream inputStream = new FileInputStream(filename);
-
-        long fileSize = new File(filename).length();
-        byte[] bytes = new byte[(int) fileSize];
-
-        inputStream.read(bytes);
+        byte[] bytes = inputStream.readAllBytes();
         inputStream.close();
-
         return bytes;
     }
 
