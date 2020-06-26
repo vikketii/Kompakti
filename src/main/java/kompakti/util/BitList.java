@@ -8,7 +8,7 @@ public class BitList {
     private int bitPosition;
 
     public BitList() {
-        arraySize = 1024;
+        arraySize = 2048;
         bytes = new byte[arraySize];
         byteCount = 0;
         bitCount = 0;
@@ -57,21 +57,11 @@ public class BitList {
     }
 
     private void increaseSize() {
-        byte[] newBytes = new byte[arraySize + arraySize / 2];
+        byte[] newBytes = new byte[arraySize * 2];
         for (int i = 0; i < arraySize; i++) {
             newBytes[i] = bytes[i];
         }
         this.bytes = newBytes;
-        this.arraySize += arraySize / 2;
+        this.arraySize *= 2;
     }
-
-//    private void decreaseSize() {
-//        int[] newBits = new int[arraySize / 2];
-//        for (int i = 0; i < (arraySize / 4); i++) {
-//            newBits[i] = bytes[i];
-//        }
-//        bytes = newBits;
-//        arraySize /= 2;
-//    }
-
 }

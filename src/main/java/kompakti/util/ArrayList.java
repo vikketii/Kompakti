@@ -6,7 +6,7 @@ public class ArrayList {
     private int arraySize;
 
     public ArrayList() {
-        arraySize = 2048;
+        arraySize = 4096;
         items = new int[arraySize];
         itemCount = 0;
     }
@@ -37,21 +37,11 @@ public class ArrayList {
     }
 
     private void increaseSize() {
-        int[] newBits = new int[arraySize + arraySize / 2];
+        int[] newBits = new int[arraySize * 2];
         for (int i = 0; i < arraySize; i++) {
             newBits[i] = items[i];
         }
         items = newBits;
-        arraySize += arraySize / 2;
+        arraySize *= 2;
     }
-
-    private void decreaseSize() {
-        int[] newBits = new int[arraySize / 2];
-        for (int i = 0; i < (arraySize / 4); i++) {
-            newBits[i] = items[i];
-        }
-        items = newBits;
-        arraySize /= 2;
-    }
-
 }
