@@ -27,8 +27,8 @@ public class Converter {
 
         int byteCount = 0;
         for (int i = 0; i < itemCount; i++) {
-            int left = bytes[byteCount] < 0 ? bytes[byteCount] + 256 : bytes[byteCount];
-            int right = bytes[byteCount + 1] < 0 ? bytes[byteCount + 1] + 256 : bytes[byteCount + 1];
+            int left = byteToUnsignedInt(bytes[byteCount]);
+            int right = byteToUnsignedInt(bytes[byteCount + 1]);
             int value = ((left << 8) + right);
             arrayList.add(value);
             byteCount += 2;
@@ -48,7 +48,7 @@ public class Converter {
     public ArrayList changeByteArrayToArrayList(byte[] bytes) {
         ArrayList arrayList = new ArrayList();
         for (int i = 0; i < bytes.length; i++) {
-            arrayList.add(Byte.toUnsignedInt(bytes[i]));
+            arrayList.add(byteToUnsignedInt(bytes[i]));
         }
         return arrayList;
     }
