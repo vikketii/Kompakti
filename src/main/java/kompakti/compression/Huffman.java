@@ -59,7 +59,7 @@ public class Huffman {
         int lengthOfData = 0;
 
         for (int i = 0; i < 4; i++) {
-            lengthOfData += bytes[256 + i] << ((2-i) * 8);
+            lengthOfData += converter.byteToUnsignedInt(bytes[256 + i]) << ((2-i) * 8);
         }
 
         BitList bitList = new BitList();
