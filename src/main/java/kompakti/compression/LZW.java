@@ -21,10 +21,10 @@ public class LZW {
         ArrayList compressed = new ArrayList();
         int nextCode = 256;
 
-        String w = "" + toCompress.get(0);
+        String w = "" + (char) toCompress.get(0);
 
         for (int i = 1; i < toCompress.size(); i++) {
-            int b = toCompress.get(i);
+            String b = "" + (char) toCompress.get(i);
             String wk = w + b;
 
             if (compressionDictionary.containsKey(wk)) {
@@ -33,7 +33,7 @@ public class LZW {
                 compressed.add(compressionDictionary.get(w));
                 compressionDictionary.put(wk, nextCode);
                 nextCode++;
-                w = Integer.toString(b);
+                w = b;
 
                 // If dictionary is full, reset it
                 if (compressionDictionary.size() >= maxDictSize - 1) {
@@ -55,12 +55,12 @@ public class LZW {
     public byte[] decompress(byte[] compressedBytes) {
         ArrayList decompressed = new ArrayList();
         ArrayList compressed = converter.change2ByteArrayToArrayList(compressedBytes);
-        int[][] decompressionDictionary = new int[maxDictSize][2];
+        int[][] decompressionDictionary = new int[maxDictSize][2]; // [0] previous position, [1] value
 
         int nextCode;
         for (nextCode = 0; nextCode < 256; nextCode++) {
-            decompressionDictionary[nextCode][0] = -1;          // previous position
-            decompressionDictionary[nextCode][1] = nextCode;    // value
+            decompressionDictionary[nextCode][0] = -1;
+            decompressionDictionary[nextCode][1] = nextCode;
         }
 
         int current = compressed.get(0);
@@ -133,7 +133,7 @@ public class LZW {
     private HashMap<String, Integer> initCompressionDictionary() {
         HashMap<String, Integer> compressionDictionary = new HashMap<>();
         for (int i = 0; i < 256; i++) {
-            compressionDictionary.put(Integer.toString(i), i);
+            compressionDictionary.put("" + (char) i, i);
         }
         return compressionDictionary;
     }
