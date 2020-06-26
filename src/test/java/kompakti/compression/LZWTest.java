@@ -1,8 +1,10 @@
 package kompakti.compression;
 
-import kompakti.compression.LZW;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.Assert.*;
 
@@ -57,5 +59,18 @@ public class LZWTest {
         String correct = "ACBBAAC";
         byte[] decompressionResult = lzw.decompress(new byte[]{0,65,0,67,0,66,0,66,0,65,1,0});
         assertArrayEquals(decompressionResult, correct.getBytes());
+    }
+
+    @Test
+    public void correctCompressionAndDecompressionOfLongText() throws IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream("alice29.txt");
+        byte[] alice = inputStream.readAllBytes();
+        inputStream.close();
+
+        assertEquals(152089, alice.length);
+        byte[] compressed = lzw.compress(alice);
+        byte[] decompressed = lzw.decompress(compressed);
+        assertArrayEquals(alice, decompressed);
     }
 }
