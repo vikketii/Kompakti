@@ -10,7 +10,7 @@ public class Huffman {
 
     public byte[] compress(byte[] bytes) {
         int[] frequencies = new int[256];
-        for (int i = 0; i < bytes.length ; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             frequencies[converter.byteToUnsignedInt(bytes[i])]++;
         }
 
@@ -37,7 +37,7 @@ public class Huffman {
 
         // Size of original data
         for (int i = 0; i < 4; i++) {
-            int move = (2-i) * 8;
+            int move = (2 - i) * 8;
             byte current = (byte) (bytes.length >> move);
             result[dictionary.length + i] = current;
         }
@@ -59,7 +59,7 @@ public class Huffman {
         int lengthOfData = 0;
 
         for (int i = 0; i < 4; i++) {
-            lengthOfData += converter.byteToUnsignedInt(bytes[256 + i]) << ((2-i) * 8);
+            lengthOfData += converter.byteToUnsignedInt(bytes[256 + i]) << ((2 - i) * 8);
         }
 
         BitList bitList = new BitList();
@@ -95,7 +95,9 @@ public class Huffman {
 
         for (int i = 0; i < 256; i++) {
             for (int j = 0; j < bytes[i]; j++) {
-                if (j == 0) { dictionary[i] = ""; }
+                if (j == 0) {
+                    dictionary[i] = "";
+                }
                 dictionary[i] += "0";
             }
         }

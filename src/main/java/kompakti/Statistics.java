@@ -10,8 +10,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 public class Statistics {
-    File[] files;
-    FileReader fr;
+    private File[] files;
+    private FileReader fr;
+    private int n;
 
     /**
      * Class for generating statistics about LZW, Huffman and both algorithms together.
@@ -25,57 +26,29 @@ public class Statistics {
         } catch (Exception e) {
             System.out.println(e);
         }
+        this.n = 10;
     }
 
-    public void generate(int n) throws IOException {
+    public Statistics(String dirName, int n) {
+        fr = new FileReader();
+        try {
+            File dir = new File(dirName);
+            files = dir.listFiles();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        this.n = n;
+    }
+
+    public void generate() throws IOException {
         double[][] timeResults = new double[files.length][3];
         long[][] lengthResults = new long[files.length][4];
-        LZW lzw = new LZW();
-        Huffman huffman = new Huffman();
 
-        if (n < 1) {
-            n = 10;
-        }
 
         for (int i = 0; i < files.length; i++) {
             InputStream inputStream = new FileInputStream(files[i]);
             byte[] bytes = inputStream.readAllBytes();
-            lengthResults[i][0] = bytes.length;
-
-            long[] times = new long[n];
-            long t;
-
-            for (int j = 0; j < n; j++) {
-                t = System.nanoTime();
-                byte[] lzwCompressed = lzw.compress(bytes);
-                t = System.nanoTime() - t;
-                lengthResults[i][1] = lzwCompressed.length;
-                times[j] = t;
-            }
-            Arrays.sort(times);
-            timeResults[i][0] = times[times.length / 2] / 1000000.0;
-
-            for (int j = 0; j < n; j++) {
-                t = System.nanoTime();
-                byte[] huffmanCompressed = huffman.compress(bytes);
-                t = System.nanoTime() - t;
-                lengthResults[i][2] = huffmanCompressed.length;
-                times[j] = t;
-            }
-            Arrays.sort(times);
-            timeResults[i][1] = times[times.length / 2] / 1000000.0;
-
-            for (int j = 0; j < n; j++) {
-                t = System.nanoTime();
-                byte[] lzwCompressed = lzw.compress(bytes);
-                byte[] compressed = huffman.compress(lzwCompressed);
-                t = System.nanoTime() - t;
-                lengthResults[i][3] = compressed.length;
-                times[j] = t;
-            }
-            Arrays.sort(times);
-            timeResults[i][2] = times[times.length / 2] / 1000000.0;
-
+            makeTests(i, bytes, timeResults, lengthResults);
             inputStream.close();
         }
 
@@ -123,5 +96,44 @@ public class Statistics {
         }
 
         return stringBuilder.toString();
+    }
+
+    private void makeTests(int i, byte[] bytes, double[][] timeResults, long[][] lengthResults) {
+        LZW lzw = new LZW();
+        Huffman huffman = new Huffman();
+        lengthResults[i][0] = bytes.length;
+        long[] times = new long[n];
+        long t;
+
+        for (int j = 0; j < n; j++) {
+            t = System.nanoTime();
+            byte[] lzwCompressed = lzw.compress(bytes);
+            t = System.nanoTime() - t;
+            lengthResults[i][1] = lzwCompressed.length;
+            times[j] = t;
+        }
+        Arrays.sort(times);
+        timeResults[i][0] = times[times.length / 2] / 1000000.0;
+
+        for (int j = 0; j < n; j++) {
+            t = System.nanoTime();
+            byte[] huffmanCompressed = huffman.compress(bytes);
+            t = System.nanoTime() - t;
+            lengthResults[i][2] = huffmanCompressed.length;
+            times[j] = t;
+        }
+        Arrays.sort(times);
+        timeResults[i][1] = times[times.length / 2] / 1000000.0;
+
+        for (int j = 0; j < n; j++) {
+            t = System.nanoTime();
+            byte[] lzwCompressed = lzw.compress(bytes);
+            byte[] compressed = huffman.compress(lzwCompressed);
+            t = System.nanoTime() - t;
+            lengthResults[i][3] = compressed.length;
+            times[j] = t;
+        }
+        Arrays.sort(times);
+        timeResults[i][2] = times[times.length / 2] / 1000000.0;
     }
 }

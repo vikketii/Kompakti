@@ -117,22 +117,17 @@ public class Main {
         }
     }
 
-
-
     private static void statistics(String[] args) {
-
-        int n = 10;
-        try {
-            n = Integer.parseInt(args[2]);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("No NUM given, using default 10.");
-        }
-
         System.out.println("Generating statistics...");
+        Statistics statistics;
 
         try {
-            Statistics statistics = new Statistics(args[1]);
-            statistics.generate(n);
+            if (args.length > 2) {
+                statistics = new Statistics(args[1], Integer.parseInt(args[2]));
+            } else {
+                statistics = new Statistics(args[1]);
+            }
+            statistics.generate();
             System.out.println();
             System.out.println("Statistics have been generated and saved as statistics.txt");
         } catch (Exception e) {
@@ -168,7 +163,9 @@ public class Main {
         byte[] bytes = new byte[1];
         try {
             bytes = fr.readBytes(filename);
-            if (bytes.length == 0) { throw new Exception(); }
+            if (bytes.length == 0) {
+                throw new Exception();
+            }
         } catch (Exception e) {
             System.err.println("Given filename not readable");
             System.exit(1);

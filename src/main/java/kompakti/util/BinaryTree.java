@@ -7,7 +7,7 @@ public class BinaryTree {
     public BinaryTree(int[] frequencies) {
         PriorityQueue queue = new PriorityQueue();
 
-        for (int i = 0; i < 256 ; i++) {
+        for (int i = 0; i < 256; i++) {
             if (frequencies[i] > 0) {
                 queue.add(new BinaryNode((byte) i, frequencies[i]));
             }

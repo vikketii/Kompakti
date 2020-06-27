@@ -75,7 +75,7 @@ public class LZW {
 
             // If dictionary doesn't have that word
             if (element[0] == 0) {
-                element[0] = compressed.get(i - 1); // Element points to last entry
+                element[0] = compressed.get(i - 1); // Point element to last entry
 
                 // Find first "character" of word
                 int previous = word[0];
@@ -128,7 +128,6 @@ public class LZW {
 
         return converter.changeArrayListToByteArray(decompressed);
     }
-
 
     private HashMap<String, Integer> initCompressionDictionary() {
         HashMap<String, Integer> compressionDictionary = new HashMap<>();

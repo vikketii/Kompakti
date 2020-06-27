@@ -74,7 +74,7 @@ public class Converter {
                 value++;
             }
             if (i < length - 1) {
-               value <<= 1;
+                value <<= 1;
             }
         }
 

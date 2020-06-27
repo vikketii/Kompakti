@@ -67,7 +67,9 @@ public class PriorityQueue {
 
     @Override
     public String toString() {
-        if (itemCount == 0) { return "[]"; }
+        if (itemCount == 0) {
+            return "[]";
+        }
 
         String result = "[";
         for (int i = 1; i < itemCount; i++) {
