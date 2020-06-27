@@ -9,14 +9,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+/**
+ * Statistics about LZW, Huffman and both algorithms together.
+ */
 public class Statistics {
     private File[] files;
     private FileReader fr;
     private int n;
 
     /**
-     * Class for generating statistics about LZW, Huffman and both algorithms together.
-     * Uses Canterbury corpus test data.
+     * Finds all files in given directory for testing.
+     *
+     * @param dirName Directory name.
      */
     public Statistics(String dirName) {
         fr = new FileReader();
@@ -29,6 +33,13 @@ public class Statistics {
         this.n = 10;
     }
 
+
+    /**
+     * Finds all files in given directory for testing.
+     *
+     * @param dirName Directory name.
+     * @param n Number of times tests are run.
+     */
     public Statistics(String dirName, int n) {
         fr = new FileReader();
         try {
@@ -40,6 +51,12 @@ public class Statistics {
         this.n = n;
     }
 
+    /**
+     * Generate statics out of found files with lzw, huffman and both together.
+     * Prints results and writes them in statistics.txt for later inspection.
+     *
+     * @throws IOException
+     */
     public void generate() throws IOException {
         double[][] timeResults = new double[files.length][3];
         long[][] lengthResults = new long[files.length][4];
@@ -52,16 +69,17 @@ public class Statistics {
             inputStream.close();
         }
 
-        String humanReadable = constructHumanReadableInfo(n, timeResults, lengthResults);
+        String results = constructResultsString(n, timeResults, lengthResults);
+        System.out.println(results);
 
         try {
-            fr.writeString("statistics.txt", humanReadable);
+            fr.writeString("statistics.txt", results);
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
-    private String constructHumanReadableInfo(int n, double[][] timeResults, long[][] lengthResults) {
+    private String constructResultsString(int n, double[][] timeResults, long[][] lengthResults) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Statistics for LZW and Huffman compression algorithms.\n");

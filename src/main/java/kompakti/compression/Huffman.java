@@ -5,28 +5,38 @@ import kompakti.util.BinaryTree;
 import kompakti.util.BitList;
 import kompakti.util.Converter;
 
-public class Huffman {
-    private Converter converter = new Converter();
 
+/**
+ * Huffman compression and decompression for byte array.
+ */
+public class Huffman {
+    private final Converter converter;
+
+    public Huffman() {
+        converter = new Converter();
+    }
+
+    /**
+     * Data compression using canonical Huffman coding.
+     * Returned array contains codebook, length of orignal data and compressed bytes.
+     *
+     * @param bytes Bytes to compress.
+     * @return Compressed bytes.
+     */
     public byte[] compress(byte[] bytes) {
         int[] frequencies = new int[256];
         for (int i = 0; i < bytes.length; i++) {
             frequencies[converter.byteToUnsignedInt(bytes[i])]++;
         }
 
-        // TODO why is there nodes deeper than 8??
         BinaryTree binaryTree = new BinaryTree(frequencies);
         BinaryNode root = binaryTree.getRoot();
-
         String[] dictionary = new String[256];
 
         fillDictionary(root, dictionary, "");
         convertDictionaryToCanonical(dictionary);
-
-        byte[] compressed = convertToHuffman(bytes, dictionary);
-//        byte[] result = new byte[compressed.length + 128]; // 128 = 256/2, because canonical dictionary fits
-        byte[] result = new byte[compressed.length + 256 + 4]; // 128 = 256/2, because canonical dictionary fits
-
+        byte[] compressed = convertToHuffmanCompressed(bytes, dictionary);
+        byte[] result = new byte[compressed.length + 256 + 4];
 
         // Huffman codes
         for (int i = 0; i < dictionary.length; i++) {
@@ -50,6 +60,13 @@ public class Huffman {
         return result;
     }
 
+    /**
+     * Decompression for Huffman compressed data.
+     * Function expects that data is compressed using compress function found in the same class.
+     *
+     * @param bytes Bytes to decompress.
+     * @return Original bytes.
+     */
     public byte[] decompress(byte[] bytes) {
         BitList result = new BitList();
         String[] dictionary = readDictionary(bytes);
@@ -86,10 +103,16 @@ public class Huffman {
             current = root;
         }
 
-
         return converter.changeBitListToByteArray(result);
     }
 
+    /**
+     * Read Huffman codebook from given bytes.
+     * Expects that codebook is at the beginning of array.
+     *
+     * @param bytes Array containing the dictionary.
+     * @return Filled dictionary.
+     */
     private String[] readDictionary(byte[] bytes) {
         String[] dictionary = new String[256];
 
@@ -106,6 +129,13 @@ public class Huffman {
         return dictionary;
     }
 
+    /**
+     * Fill Huffman codebook recursively by traversing binarytree.
+     *
+     * @param node       Current binarynode.
+     * @param dictionary Codebook dictionary to fill.
+     * @param path       Traversed path.
+     */
     private void fillDictionary(BinaryNode node, String[] dictionary, String path) {
         if (node.isLeaf()) {
             int nodeValue = converter.byteToUnsignedInt(node.getValue());
@@ -122,7 +152,14 @@ public class Huffman {
         }
     }
 
-    private byte[] convertToHuffman(byte[] bytes, String[] dictionary) {
+    /**
+     * Compress data with dictionary.
+     *
+     * @param bytes      Data to compress.
+     * @param dictionary Huffman codebook.
+     * @return Compressed data.
+     */
+    private byte[] convertToHuffmanCompressed(byte[] bytes, String[] dictionary) {
         BitList bitList = new BitList();
         for (int i = 0; i < bytes.length; i++) {
             int value = converter.byteToUnsignedInt(bytes[i]);
@@ -133,7 +170,11 @@ public class Huffman {
         return converter.changeBitListToByteArray(bitList);
     }
 
-
+    /**
+     * Convert Huffman codebook to canonical codebook.
+     *
+     * @param dictionary Huffman codebook.
+     */
     private void convertDictionaryToCanonical(String[] dictionary) {
         String nextValue = "0";
         for (int i = 1; i < 64; i++) {

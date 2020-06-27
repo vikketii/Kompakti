@@ -4,17 +4,26 @@ import kompakti.util.ArrayList;
 import kompakti.util.Converter;
 import kompakti.util.HashMap;
 
+
+/**
+ * Lempel-Ziv-Welch compression and decompression for byte array.
+ */
 public class LZW {
 
-    private final int maxDictSize = 65536;   // Number of codewords 2^16 = 65536
-    private final Converter converter = new Converter();
+    private final int maxDictSize;
+    private final Converter converter;
+
+    public LZW() {
+        maxDictSize = 65536; // Number of codewords 2^16 = 65536
+        converter = new Converter();
+    }
 
     /**
-     * Compress given data with Lempel-Ziv-Welch algorithm.
+     * Data compression using Lempel-Ziv-Welch algorithm.
      * Compressed data is stored as 16 bit words into byte array.
      *
-     * @param bytes
-     * @return compressed bytes
+     * @param bytes Bytes to compress.
+     * @return Compressed bytes.
      */
     public byte[] compress(byte[] bytes) {
         HashMap<String, Integer> compressionDictionary = initCompressionDictionary();
@@ -49,14 +58,15 @@ public class LZW {
     }
 
     /**
-     * Decompress given lzw compressed data. Doesn't check if data is valid.
+     * Decompression for LZW compressed data.
+     * Function expects that data is compressed using compress function found in the same class.
      *
-     * @param compressedBytes
-     * @return decompressed bytes
+     * @param bytes Bytes to decompress.
+     * @return Original bytes.
      */
-    public byte[] decompress(byte[] compressedBytes) {
+    public byte[] decompress(byte[] bytes) {
         ArrayList decompressed = new ArrayList();
-        ArrayList compressed = converter.change2ByteArrayToArrayList(compressedBytes);
+        ArrayList compressed = converter.change2ByteArrayToArrayList(bytes);
         int[][] decompressionDictionary = new int[maxDictSize][2]; // [0] previous position, [1] value
 
         int nextCode;
@@ -131,6 +141,11 @@ public class LZW {
         return converter.changeArrayListToByteArray(decompressed);
     }
 
+    /**
+     * Initializes dictionary with ASCII characters.
+     *
+     * @return Initialized dictionary.
+     */
     private HashMap<String, Integer> initCompressionDictionary() {
         HashMap<String, Integer> compressionDictionary = new HashMap<>();
         for (int i = 0; i < 256; i++) {

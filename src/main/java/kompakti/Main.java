@@ -3,6 +3,9 @@ package kompakti;
 import kompakti.compression.Huffman;
 import kompakti.compression.LZW;
 
+/**
+ * Program for making LZW and Huffman compressions for any kind of data.
+ */
 public class Main {
     public static void main(String[] args) {
         String flag = "";
