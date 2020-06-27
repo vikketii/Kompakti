@@ -1,16 +1,21 @@
 # Design document
-Kompakti is Java program for data compression. The goal of this project is to implement Huffman and LZW algorithms using only self made data structures and achieving meaningful compression rate for real life data. In the end there will be also some comparing functionality between implemented algorithms.
+Kompakti is Java program for data compression implementing Huffman and LZW algorithms using only self made data structures and achieving meaningful compression rates for real life data. There is also functionality to make statistics how the algorithms perform.
 
 ## Data structures
 - LZW uses dictionary and dynamic array.
-- Huffman uses binary tree which can be stored in to a regular array. Array size depends on the number of symbols, so dynamic array implementation is probably needed.
+- Huffman uses binary tree and dynamic bitlist.
 
 ## Input/Output
-Input can be first just text files. I would like to make the compression use bytes so you could compress any kind of file.
+Input can be any kind of file. It would be fun to extend this to be any folder.
 
-Output is size of original file and differently compressed files, and also compression rates and time taken for the compression.
+Output is either compressed or decompressed file and information about how much algorithm were able to compress given file.
+User can also ask the program to make statistics out of files in folder, so then output is the statistics in a file.
 
 ## Time and space complexity
+Huffman compression is implemented as O(nlogn) complexity because priority queue takes O(logn) to add one value and we have n symbols to add.
+
+LZW compression is O()
+
 I haven't found any solid information about these yet. Huffman is probably O(n) complex with binary tree implementation and LZW probably O(nlog(n)) with hashmap, but both depend on implementation.
 
 ## Sources

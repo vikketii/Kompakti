@@ -17,4 +17,6 @@ Kompakti is data compression program using Huffman and LZW compression algorithm
 - [1. Viikkoraportti](documentation/viikkoraportit/viikkoraportti-1.md)
 
 ## Usage
-- `./gradlew run --args='<pathToFile>'`
+`./gradlew run --args='[OPTION] [FILE]'`
+
+More info in [user guide](documentation/user-guide.md)

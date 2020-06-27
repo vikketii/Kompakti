@@ -58,18 +58,19 @@ public class Statistics {
      * @throws IOException
      */
     public void generate() throws IOException {
-        double[][] timeResults = new double[files.length][3];
-        long[][] lengthResults = new long[files.length][4];
+        double[][] compressionTimeResults = new double[files.length][3];
+        double[][] decompressionTimeResults = new double[files.length][3];
+        long[][] compressionLengthResults = new long[files.length][4];
 
 
         for (int i = 0; i < files.length; i++) {
             InputStream inputStream = new FileInputStream(files[i]);
             byte[] bytes = inputStream.readAllBytes();
-            makeTests(i, bytes, timeResults, lengthResults);
+            makeTests(i, bytes, compressionTimeResults, decompressionTimeResults, compressionLengthResults);
             inputStream.close();
         }
 
-        String results = constructResultsString(n, timeResults, lengthResults);
+        String results = constructResultsString(n, compressionTimeResults, decompressionTimeResults, compressionLengthResults);
         System.out.println(results);
 
         try {
@@ -79,7 +80,7 @@ public class Statistics {
         }
     }
 
-    private String constructResultsString(int n, double[][] timeResults, long[][] lengthResults) {
+    private String constructResultsString(int n, double[][] compressionTimeResults, double[][] decompressionTimeResults, long[][] compressionLengthResults) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Statistics for LZW and Huffman compression algorithms.\n");
@@ -87,28 +88,37 @@ public class Statistics {
 
         stringBuilder.append("Compression times (ms):\n");
         stringBuilder.append(String.format("%12s%14s%14s%14s", "", "LZW", "Huffman", "LZW+Huffman"));
-        for (int i = 0; i < timeResults.length; i++) {
+        for (int i = 0; i < compressionTimeResults.length; i++) {
             stringBuilder.append(String.format("\n%12s", files[i].getName()));
-            for (int j = 0; j < timeResults[0].length; j++) {
-                stringBuilder.append(String.format("%14.4f", timeResults[i][j]));
+            for (int j = 0; j < compressionTimeResults[0].length; j++) {
+                stringBuilder.append(String.format("%14.4f", compressionTimeResults[i][j]));
+            }
+        }
+
+        stringBuilder.append("\n\nDecompression times (ms):\n");
+        stringBuilder.append(String.format("%12s%14s%14s%14s", "", "LZW", "Huffman", "LZW+Huffman"));
+        for (int i = 0; i < decompressionTimeResults.length; i++) {
+            stringBuilder.append(String.format("\n%12s", files[i].getName()));
+            for (int j = 0; j < decompressionTimeResults[0].length; j++) {
+                stringBuilder.append(String.format("%14.4f", decompressionTimeResults[i][j]));
             }
         }
 
         stringBuilder.append("\n\nCompression results (bytes):\n");
         stringBuilder.append(String.format("%12s%14s%14s%14s%14s", "", "Original", "LZW", "Huffman", "LZW+Huffman"));
-        for (int i = 0; i < timeResults.length; i++) {
+        for (int i = 0; i < compressionTimeResults.length; i++) {
             stringBuilder.append(String.format("\n%12s", files[i].getName()));
-            for (int j = 0; j < lengthResults[0].length; j++) {
-                stringBuilder.append(String.format("%14d", lengthResults[i][j]));
+            for (int j = 0; j < compressionLengthResults[0].length; j++) {
+                stringBuilder.append(String.format("%14d", compressionLengthResults[i][j]));
             }
         }
 
         stringBuilder.append("\n\nCompression ratio:\n");
         stringBuilder.append(String.format("%12s%14s%14s%14s", "", "LZW", "Huffman", "LZW+Huffman"));
-        for (int i = 0; i < timeResults.length; i++) {
+        for (int i = 0; i < compressionTimeResults.length; i++) {
             stringBuilder.append(String.format("\n%12s", files[i].getName()));
-            for (int j = 1; j < lengthResults[0].length; j++) {
-                float ratio = (float) lengthResults[i][0] / lengthResults[i][j];
+            for (int j = 1; j < compressionLengthResults[0].length; j++) {
+                float ratio = (float) compressionLengthResults[i][0] / compressionLengthResults[i][j];
                 stringBuilder.append(String.format("%14.2f", ratio));
             }
         }
@@ -116,42 +126,61 @@ public class Statistics {
         return stringBuilder.toString();
     }
 
-    private void makeTests(int i, byte[] bytes, double[][] timeResults, long[][] lengthResults) {
+    private void makeTests(int i, byte[] bytes, double[][] compressionTimeResults, double[][] decompressionTimeResults, long[][] compressionLengthResults) {
         LZW lzw = new LZW();
         Huffman huffman = new Huffman();
-        lengthResults[i][0] = bytes.length;
-        long[] times = new long[n];
-        long t;
+        compressionLengthResults[i][0] = bytes.length;
+        long[] compressionTimes = new long[n];
+        long[] decompressionTimes = new long[n];
+        long t1;
+        long t2;
 
         for (int j = 0; j < n; j++) {
-            t = System.nanoTime();
+            t1 = System.nanoTime();
             byte[] lzwCompressed = lzw.compress(bytes);
-            t = System.nanoTime() - t;
-            lengthResults[i][1] = lzwCompressed.length;
-            times[j] = t;
+            t1 = System.nanoTime() - t1;
+            t2 = System.nanoTime();
+            lzw.decompress(lzwCompressed);
+            t2 = System.nanoTime() - t2;
+            compressionLengthResults[i][1] = lzwCompressed.length;
+            compressionTimes[j] = t1;
+            decompressionTimes[j] = t2;
         }
-        Arrays.sort(times);
-        timeResults[i][0] = times[times.length / 2] / 1000000.0;
+        Arrays.sort(compressionTimes);
+        compressionTimeResults[i][0] = compressionTimes[compressionTimes.length / 2] / 1000000.0;
+        Arrays.sort(decompressionTimes);
+        decompressionTimeResults[i][0] = decompressionTimes[decompressionTimes.length / 2] / 1000000.0;
 
         for (int j = 0; j < n; j++) {
-            t = System.nanoTime();
+            t1 = System.nanoTime();
             byte[] huffmanCompressed = huffman.compress(bytes);
-            t = System.nanoTime() - t;
-            lengthResults[i][2] = huffmanCompressed.length;
-            times[j] = t;
+            t1 = System.nanoTime() - t1;
+            t2 = System.nanoTime();
+            huffman.decompress(huffmanCompressed);
+            t2 = System.nanoTime() - t2;
+            compressionLengthResults[i][2] = huffmanCompressed.length;
+            compressionTimes[j] = t1;
+            decompressionTimes[j] = t2;
         }
-        Arrays.sort(times);
-        timeResults[i][1] = times[times.length / 2] / 1000000.0;
+        Arrays.sort(compressionTimes);
+        compressionTimeResults[i][1] = compressionTimes[compressionTimes.length / 2] / 1000000.0;
+        Arrays.sort(decompressionTimes);
+        decompressionTimeResults[i][1] = decompressionTimes[decompressionTimes.length / 2] / 1000000.0;
 
         for (int j = 0; j < n; j++) {
-            t = System.nanoTime();
-            byte[] lzwCompressed = lzw.compress(bytes);
-            byte[] compressed = huffman.compress(lzwCompressed);
-            t = System.nanoTime() - t;
-            lengthResults[i][3] = compressed.length;
-            times[j] = t;
+            t1 = System.nanoTime();
+            byte[] compressed = huffman.compress(lzw.compress(bytes));
+            t1 = System.nanoTime() - t1;
+            t2 = System.nanoTime();
+            lzw.decompress(huffman.decompress(compressed));
+            t2 = System.nanoTime() - t2;
+            compressionLengthResults[i][3] = compressed.length;
+            compressionTimes[j] = t1;
+            decompressionTimes[j] = t2;
         }
-        Arrays.sort(times);
-        timeResults[i][2] = times[times.length / 2] / 1000000.0;
+        Arrays.sort(compressionTimes);
+        compressionTimeResults[i][2] = compressionTimes[compressionTimes.length / 2] / 1000000.0;
+        Arrays.sort(decompressionTimes);
+        decompressionTimeResults[i][2] = decompressionTimes[decompressionTimes.length / 2] / 1000000.0;
     }
 }
