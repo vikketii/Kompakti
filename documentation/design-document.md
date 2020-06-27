@@ -3,19 +3,14 @@ Kompakti is Java program for data compression implementing Huffman and LZW algor
 
 ## Data structures
 - LZW uses dictionary and dynamic array.
-- Huffman uses binary tree and dynamic bitlist.
+- Huffman uses binary tree which can be stored in to a regular array. Array size depends on the number of symbols, so dynamic array implementation is probably needed.
 
 ## Input/Output
-Input can be any kind of file. It would be fun to extend this to be any folder.
+Input can be first just text files. I would like to make the compression use bytes so you could compress any kind of file.
 
-Output is either compressed or decompressed file and information about how much algorithm were able to compress given file.
-User can also ask the program to make statistics out of files in folder, so then output is the statistics in a file.
+Output is size of original file and differently compressed files, and also compression rates and time taken for the compression.
 
 ## Time and space complexity
-Huffman compression is implemented as O(nlogn) complexity because priority queue takes O(logn) to add one value and we have n symbols to add.
-
-LZW compression is O()
-
 I haven't found any solid information about these yet. Huffman is probably O(n) complex with binary tree implementation and LZW probably O(nlog(n)) with hashmap, but both depend on implementation.
 
 ## Sources
