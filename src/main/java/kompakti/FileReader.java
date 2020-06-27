@@ -12,10 +12,16 @@ public class FileReader {
         return bytes;
     }
 
-    public void writeFile(String filename, byte[] bytesToWrite) throws IOException {
+    public void writeBytes(String filename, byte[] bytesToWrite) throws IOException {
         OutputStream outputStream = new FileOutputStream(filename);
         outputStream.write(bytesToWrite);
         outputStream.close();
+    }
+
+    public void writeString(String filename, String stringToWrite) throws IOException {
+        PrintWriter file = new PrintWriter(filename);
+        file.print(stringToWrite);
+        file.close();
     }
 }
 

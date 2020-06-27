@@ -6,51 +6,38 @@ import kompakti.compression.LZW;
 public class Main {
     public static void main(String[] args) {
         String flag = "";
-        String filename = "";
-
-        if (args[0].equals("--statistic")) {
-            statistics();
-            System.exit(0);
-        }
 
         try {
             flag = args[0];
-            filename = args[1];
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
             help();
-            System.exit(0);
-        }
-
-        FileReader fr = new FileReader();
-        byte[] bytes = new byte[0];
-        try {
-            bytes = fr.readBytes(filename);
-            if (bytes.length == 0) {
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            System.err.println("Given filename not readable");
             System.exit(1);
         }
 
         switch (flag) {
-            case "--normal":
-                compression(bytes, fr, filename);
+            case "--all":
+                compression("comp", args);
+                break;
+            case "--all-decomp":
+                decompression("comp", args);
                 break;
             case "--lzw":
-                lzwCompression(bytes, fr, filename);
+                compression("lzw", args);
                 break;
             case "--lzw-decomp":
-                lzwDecompression(bytes, fr, filename);
+                decompression("lzw", args);
                 break;
             case "--huffman":
-                huffmanCompression(bytes, fr, filename);
+                compression("huffman", args);
                 break;
             case "--huffman-decomp":
-                huffmanDecompression(bytes, fr, filename);
+                decompression("huffman", args);
                 break;
-            case "--statistic":
-                statistics();
+            case "--statistics":
+                statistics(args);
+                break;
+            case "--help":
+                help();
                 break;
             default:
                 System.err.println("Invalid argument " + flag);
@@ -59,102 +46,115 @@ public class Main {
         }
     }
 
-    private static void compression(byte[] bytes, FileReader fr, String filename) {
+    private static void compression(String algorithm, String[] args) {
+        byte[] compressed = new byte[1];
+        LZW lzw = new LZW();
+        Huffman huffman = new Huffman();
+        FileReader fr = new FileReader();
+        String filename = "";
+
+        try {
+            filename = args[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Give filename as argument");
+            System.exit(1);
+        }
+
+        byte[] bytes = readFile(filename, fr);
+
+        switch (algorithm) {
+            case "comp":
+                compressed = huffman.compress(lzw.compress(bytes));
+                break;
+            case "lzw":
+                compressed = lzw.compress(bytes);
+                break;
+            case "huffman":
+                compressed = huffman.compress(bytes);
+                break;
+        }
+
+        try {
+            fr.writeBytes(filename + "." + algorithm, compressed);
+            presentBytes(bytes, compressed);
+        } catch (Exception e) {
+            System.out.println("Give filename as argument");
+        }
+    }
+
+    private static void decompression(String algorithm, String[] args) {
+        String filename = "";
+        try {
+            filename = args[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Give filename as argument");
+            System.exit(1);
+        }
+
+        byte[] decompressed = new byte[1];
         LZW lzw = new LZW();
         Huffman huffman = new Huffman();
 
-        byte[] lzwCompressed = lzw.compress(bytes);
-        byte[] huffmanCompressed = huffman.compress(lzwCompressed);
-        byte[] huffmanDecompressed = huffman.decompress(huffmanCompressed);
-        byte[] lzwDecompressed = lzw.decompress(huffmanDecompressed);
+        FileReader fr = new FileReader();
+        byte[] bytes = readFile(filename, fr);
+
+        switch (algorithm) {
+            case "comp":
+                decompressed = lzw.decompress(huffman.decompress(bytes));
+                break;
+            case "lzw":
+                decompressed = lzw.decompress(bytes);
+                break;
+            case "huffman":
+                decompressed = huffman.decompress(bytes);
+                break;
+        }
 
         try {
-            fr.writeFile(filename + ".comp", huffmanCompressed);
-            fr.writeFile(filename + ".compdecomp", lzwDecompressed);
-            presentBytes(bytes, lzwCompressed);
+            fr.writeBytes(filename + ".de" + algorithm, decompressed);
         } catch (Exception e) {
-            System.out.println("Give filename as argument");
+            System.out.println("Can't write to file " + filename);
         }
     }
 
-    private static void lzwCompression(byte[] bytes, FileReader fr, String filename) {
-        LZW lzw = new LZW();
-        byte[] compressed = lzw.compress(bytes);
-//        byte[] decompressed = lzw.decompress(compressed);
 
+
+    private static void statistics(String[] args) {
+
+        int n = 10;
         try {
-            fr.writeFile(filename + ".lzw", compressed);
-//            fr.writeFile(filename + ".lzwdecomp", decompressed);
-            presentBytes(bytes, compressed);
-        } catch (Exception e) {
-            System.out.println("Give filename as argument");
+            n = Integer.parseInt(args[2]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("No NUM given, using default 10.");
         }
-    }
 
-    private static void lzwDecompression(byte[] bytes, FileReader fr, String filename) {
-        LZW lzw = new LZW();
-        byte[] decompressed = lzw.decompress(bytes);
-
-        try {
-            fr.writeFile(filename + ".lzwdecomp", decompressed);
-        } catch (Exception e) {
-            System.out.println("Give filename as argument");
-        }
-    }
-
-    private static void huffmanCompression(byte[] bytes, FileReader fr, String filename) {
-        Huffman huff = new Huffman();
-        byte[] compressed = huff.compress(bytes);
-//        byte[] decompressed = huff.decompress(compressed);
-
-        try {
-            fr.writeFile(filename + ".huff", compressed);
-//            fr.writeFile(filename + ".huffdecomp", decompressed);
-            presentBytes(bytes, compressed);
-        } catch (Exception e) {
-            System.out.println("Give filename as argument");
-        }
-    }
-
-    private static void huffmanDecompression(byte[] bytes, FileReader fr, String filename) {
-        Huffman huff = new Huffman();
-        byte[] decompressed = huff.decompress(bytes);
-
-        try {
-            fr.writeFile(filename + ".huffdecomp", decompressed);
-        } catch (Exception e) {
-            System.out.println("Give filename as argument");
-        }
-    }
-
-    private static void statistics() {
         System.out.println("Generating statistics...");
 
-//        try {
-            Statistics statistics = new Statistics();
-            statistics.generate();
-            System.out.println("Statistics have been generated.");
-            System.out.println("Human readable file is named statistics.txt");
-            System.out.println("Csv data is named statistics.csv");
-//        } catch (Exception e) {
-//            System.err.println(e);
-//            System.exit(1);
-//        }
+        try {
+            Statistics statistics = new Statistics(args[1]);
+            statistics.generate(n);
+            System.out.println();
+            System.out.println("Statistics have been generated and saved as statistics.txt");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
-
 
     private static void help() {
         System.out.println("Usage: [OPTION] [FILE]");
         System.out.println();
-        System.out.println("--normal: <TODO> makes LZW + Huffman compression of given file and saves it as .comp file");
+        System.out.println("--all: makes LZW + Huffman compression of given file and saves it as .comp file");
+        System.out.println("--all-decomp: makes LZW + Huffman decompression of given file and saves it as .decomp file");
+
         System.out.println("--lzw: makes LZW compression of given file and saves it as .lzw file");
-        System.out.println("--lzw-decomp: makes LZW decompression of given file and saves it as .lzwdecomp file");
-        System.out.println("--huffman: makes Huffman compression of given file and saves it as .huff file");
-        System.out.println("--huffman-decomp: makes Huffman decompression of given file and saves it as .huffdecomp file");
-        System.out.println("--statistics: <TODO> uses 'Canterbury corpus' files to make stats about huffman and lzw compression");
+        System.out.println("--lzw-decomp: makes LZW decompression of given file and saves it as .delzw file");
+
+        System.out.println("--huffman: makes Huffman compression of given file and saves it as .huffman file");
+        System.out.println("--huffman-decomp: makes Huffman decompression of given file and saves it as .dehuffman file");
+
+        System.out.println("--statistics FOLDER NUM: Uses files in given FOLDER to make stats about huffman and lzw compression.\n  Goes trough tests NUM times (default 10).");
         System.out.println("--help: prints this help message");
     }
-
 
     private static void presentBytes(byte[] original, byte[] compressed) {
         System.out.println("Original size: " + original.length);
@@ -162,5 +162,17 @@ public class Main {
 
         double ratio = (double) original.length / compressed.length;
         System.out.printf("Compress ratio: %.2f\n", ratio);
+    }
+
+    private static byte[] readFile(String filename, FileReader fr) {
+        byte[] bytes = new byte[1];
+        try {
+            bytes = fr.readBytes(filename);
+            if (bytes.length == 0) { throw new Exception(); }
+        } catch (Exception e) {
+            System.err.println("Given filename not readable");
+            System.exit(1);
+        }
+        return bytes;
     }
 }
