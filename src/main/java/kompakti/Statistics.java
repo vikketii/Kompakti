@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Arrays;
 
 public class Statistics {
@@ -20,8 +19,6 @@ public class Statistics {
      */
     public Statistics(String dirName) {
         fr = new FileReader();
-//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//        URL dirURL = classLoader.getResource("canterbury-corpus/");
         try {
             File dir = new File(dirName);
             files = dir.listFiles();
@@ -82,7 +79,7 @@ public class Statistics {
             inputStream.close();
         }
 
-        String humanReadable = constructHumanReadableInfo(timeResults, lengthResults);
+        String humanReadable = constructHumanReadableInfo(n, timeResults, lengthResults);
 
         try {
             fr.writeString("statistics.txt", humanReadable);
@@ -91,8 +88,11 @@ public class Statistics {
         }
     }
 
-    private String constructHumanReadableInfo(double[][] timeResults, long[][] lengthResults) {
+    private String constructHumanReadableInfo(int n, double[][] timeResults, long[][] lengthResults) {
         StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Statistics for LZW and Huffman compression algorithms.\n");
+        stringBuilder.append("Tests were run " + n + " times.\n\n");
 
         stringBuilder.append("Compression times (ms):\n");
         stringBuilder.append(String.format("%12s%14s%14s%14s", "", "LZW", "Huffman", "LZW+Huffman"));
