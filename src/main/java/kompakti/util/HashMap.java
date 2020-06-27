@@ -62,6 +62,7 @@ public class HashMap<K, V> {
 
     /**
      * Hashfunction, uses polynomial hashing with constant 31.
+     *
      * @param key
      * @return hashValue
      */

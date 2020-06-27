@@ -6,12 +6,13 @@ import kompakti.util.HashMap;
 
 public class LZW {
 
-    private int maxDictSize = 65536;   // Number of codewords 2^16 = 65536
-    private Converter converter = new Converter();
+    private final int maxDictSize = 65536;   // Number of codewords 2^16 = 65536
+    private final Converter converter = new Converter();
 
     /**
      * Compress given data with Lempel-Ziv-Welch algorithm.
      * Compressed data is stored as 16 bit words into byte array.
+     *
      * @param bytes
      * @return compressed bytes
      */
@@ -49,6 +50,7 @@ public class LZW {
 
     /**
      * Decompress given lzw compressed data. Doesn't check if data is valid.
+     *
      * @param compressedBytes
      * @return decompressed bytes
      */

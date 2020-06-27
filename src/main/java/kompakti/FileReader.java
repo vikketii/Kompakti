@@ -1,8 +1,6 @@
 package kompakti;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.util.ArrayList;
 
 public class FileReader {
     public byte[] readBytes(String filename) throws IOException {
